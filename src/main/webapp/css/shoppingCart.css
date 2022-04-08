@@ -1,0 +1,89 @@
+body {
+    background-color: #F6F0EF;
+    padding-bottom: 100px;
+}
+
+.shoppingBag, .order-layout {
+    overflow: hidden;
+    max-width: 1200px;
+    width: 90%;
+    margin: 80px auto 50px;
+    padding: 40px;
+    background: white;
+    border-radius: 5px;
+}
+
+.title {
+    display: block;
+    margin-bottom: 20px;
+    font-weight: 500;
+    font-size: 40px;
+    color: #283D64;
+}
+
+.order {
+    border: none;
+}
+
+.order .z-row .z-row-inner, .z-row .z-cell {
+    border-top: 3px solid #F2F2F2;
+    padding: 20px 5px;
+}
+
+.item-detail .z-label {
+    margin: 6px 0;
+}
+
+.item-image {
+    text-align: center;
+    width: 80px;
+}
+
+.subTotal {
+    text-align: right;
+    display: block;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.z-combobox-readonly > input {
+    background: #FFFFFF;
+}
+
+.product-list .z-comboitem {
+    height: 60px;
+}
+
+.z-comboitem-image {
+    margin: 0 12px 0 -3px;
+    float: none;
+}
+
+.z-comboitem-image img {
+    width: 50px;
+}
+
+.add-items, .submit {
+    margin: 20px 2px 0;
+}
+
+.z-foot {
+    height: 60px;
+}
+
+.z-footer-content {
+    text-align: right;
+}
+
+.z-footer-content .z-label {
+    color: indianred;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+div.z-log {
+    width: 250px;
+    position: fixed;
+    bottom: 5px;
+    right: 100px;
+}
