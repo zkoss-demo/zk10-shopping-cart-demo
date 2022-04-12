@@ -210,7 +210,7 @@ public class OrderDao extends BaseDao {
 		return count;
 	}
 
-	private int getPrice(String productName) {
-		return Item.priceTable.get(productName);
+	private static int getPrice(String productName) {
+		return Item.PRODUCT_TABLE.get(productName).getPrice();
 	}
 }

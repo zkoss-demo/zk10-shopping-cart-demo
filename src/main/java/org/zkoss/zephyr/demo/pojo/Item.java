@@ -12,6 +12,7 @@ Copyright (C) 2022 Potix Corporation. All Rights Reserved.
 package org.zkoss.zephyr.demo.pojo;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -32,12 +33,13 @@ public class Item {
 
 	private Integer status;
 
-	public static final Map<String, Integer> priceTable = new HashMap<>();
+	public static final Map<String, Product> PRODUCT_TABLE = new LinkedHashMap<>(3);
 
+	public static final Product DEFAULT_PRODUCT = new Product("Cake", 100, "/image/cake.svg");
 	static {
-		priceTable.put("Cake", 100);
-		priceTable.put("Hamburger", 200);
-		priceTable.put("Pizza", 300);
+		PRODUCT_TABLE.put("Cake", DEFAULT_PRODUCT);
+		PRODUCT_TABLE.put("Hamburger", new Product("Hamburger", 200, "/image/hamburger.svg"));
+		PRODUCT_TABLE.put("Pizza", new Product("Pizza", 300, "/image/pizza.svg"));
 	}
 
 	public static final int NOT_COMPLETE = 1;

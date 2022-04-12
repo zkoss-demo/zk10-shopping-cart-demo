@@ -16,14 +16,14 @@ import org.zkoss.zephyr.demo.db.service.OrderService;
 /**
  * @author katherine
  */
-public class DaoFactory {
-	public static OrderService getInstance() {
-		OrderService dao = null;
-		try {
-			dao = new OrderService();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return dao;
+public enum DaoFactory {
+	INSTANCE(new OrderService());
+	final OrderService service;
+	DaoFactory(OrderService dao) {
+		this.service = dao;
+	}
+
+	public OrderService getService() {
+		return service;
 	}
 }
