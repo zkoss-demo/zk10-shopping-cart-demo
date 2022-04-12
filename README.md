@@ -18,5 +18,5 @@ Note: make sure ./build/libs/shopping_cart_demo.war exist.
 After docker compose start, application can be accessed in http://localhost/shoppingCart
 
 ## Licence
-MIT
+Demo code: MIT
 * [ZK Framework](https://github.com/zkoss/zk): [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
