@@ -18,8 +18,6 @@ import static org.zkoss.zephyr.demo.util.Helper.log;
 import static org.zkoss.zephyr.demo.util.Helper.nextUuid;
 import static org.zkoss.zephyr.demo.util.Helper.parseUuid;
 import static org.zkoss.zephyr.demo.util.Helper.uuid;
-import static org.zkoss.zephyr.zpr.ILabel.of;
-import static org.zkoss.zephyr.zpr.ILabel.ofId;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -76,7 +74,7 @@ public class DemoRichlet implements StatelessRichlet {
 	private IVlayout initShoppingBag() {
 		final String orderId = Helper.nextUuid();
 		return IVlayout.of(
-			of("Shopping bag").withSclass("title"),
+			ILabel.of("Shopping bag").withSclass("title"),
 			IGrid.ofId("shoppingBag").withHflex("1")
 				.withEmptyMessage("please add items.")
 				.withColumns(initShoppingBagColumn())
@@ -92,7 +90,7 @@ public class DemoRichlet implements StatelessRichlet {
 
 	private IAnyGroup initOrder() {
 		return IVlayout.of(
-			of("Your Order").withSclass("title"),
+			ILabel.of("Your Order").withSclass("title"),
 			IGrid.DEFAULT.withRows(IRows.ofId("orderRows"))
 				.withFoot(IFoot.ofId("summary"))
 				.withHflex("1").withEmptyMessage("no order.").withSclass("order"))
@@ -141,8 +139,8 @@ public class DemoRichlet implements StatelessRichlet {
 			ISpinner.ofId(uuid(uuid, "quantity"))
 				.withValue(initQuantity).withInstant(true)
 				.withAction(this::doQuantityChange),
-			ofId(uuid(uuid, "price")).withValue(String.valueOf(initPrice)),
-			ofId(uuid(uuid, "subTotal")).withValue(String.valueOf(initQuantity * initPrice)),
+			ILabel.ofId(uuid(uuid, "price")).withValue(String.valueOf(initPrice)),
+			ILabel.ofId(uuid(uuid, "subTotal")).withValue(String.valueOf(initQuantity * initPrice)),
 			IButton.ofId(uuid(uuid, "delete")).withLabel("delete").withAction(this::doDelete)
 		);
 	}
@@ -175,25 +173,25 @@ public class DemoRichlet implements StatelessRichlet {
 
 	private IRow initOrderRow(Item item) {
 		String productName = item.getProductName();
-		String src = Item.PRODUCT_TABLE.get(productName.toLowerCase()).getIcon();
+		String src = Item.PRODUCT_TABLE.get(productName).getIcon();
 		return IRow.of(
 			IVlayout.of(
 				IImage.ofSize("70px", "70px").withSrc(src),
-				of(productName)
+				ILabel.of(productName)
 			).withSclass("item-image"),
 			IVlayout.of(
-				of("Size: " + item.getSize()),
-				of("Quantity: " + item.getQuantity()),
-				of("$ " + item.getPrice())
+				ILabel.of("Size: " + item.getSize()),
+				ILabel.of("Quantity: " + item.getQuantity()),
+				ILabel.of("$ " + item.getPrice())
 			).withSclass("item-detail"),
-			of("Sub Total: $ " + item.getSubTotal()).withSclass("subTotal")
+			ILabel.of("Sub Total: $ " + item.getSubTotal()).withSclass("subTotal")
 		);
 	}
 
 	private IFooter initSummary(int count, int sum) {
 		return IFooter.of(
-			of("My bag: " + count + " items, "),
-			of(" Total price: $" + sum)
+			ILabel.of("My bag: " + count + " items, "),
+			ILabel.of(" Total price: $" + sum)
 		);
 	}
 
