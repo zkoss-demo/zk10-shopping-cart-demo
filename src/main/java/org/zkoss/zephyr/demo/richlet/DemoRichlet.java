@@ -79,18 +79,9 @@ public class DemoRichlet implements StatelessRichlet {
 		String orderId = UUID.randomUUID().toString().substring(0, 6);
 		return IVlayout.of(
 				ILabel.of("Shopping bag").withSclass("title"),
-				IGrid.ofId("shoppingBag")
-						.withColumns(IColumns.of(
-								IColumn.of("id").withVisible(false),
-								IColumn.of("ITEMS"),
-								IColumn.of("SIZE"),
-								IColumn.of("QUANTITY"),
-								IColumn.of("PRICE"),
-								IColumn.of("TOTAL"),
-								IColumn.DEFAULT
-						))
-						.withRows(IRows.of(initShoppingBagItem(orderId)).withId("shoppingBagRows"))
-						.withHflex("1").withEmptyMessage("please add items."),
+				IGrid.ofId("shoppingBag").withHflex("1").withEmptyMessage("please add items.")
+						.withColumns(initShoppingBagColumn())
+						.withRows(initShoppingBagColumn(orderId)),
 				IDiv.of(
 					IButton.of("add item +").withAction(this::addItem)
 							.withSclass("add-items").withId(generateUuid(orderId, "add")),
@@ -105,21 +96,21 @@ public class DemoRichlet implements StatelessRichlet {
 				ILabel.of("Your Order").withSclass("title"),
 				IGrid.DEFAULT.withRows(IRows.ofId("orderRows"))
 						.withFoot(IFoot.ofId("summary"))
-						.withHflex("1").withEmptyMessage("no order.").withSclass("order")
-		).withSclass("order-layout");
+						.withHflex("1").withEmptyMessage("no order.").withSclass("order"))
+				.withSclass("order-layout");
 	}
 
 	@Action(type = Events.ON_CLICK)
 	public void addItem(@ActionVariable(id = SELF, field = "id") String orderId) {
 		UiAgent.getCurrent().appendChild(Locator.ofId("shoppingBagRows"), initShoppingBagItem(parseUuid(orderId)));
-		serverLog(Executions.getCurrent(), "add item");
+		serverLog("add item");
 	}
 
 	@Action(type = Events.ON_CLICK)
 	public void doDelete(Self self, @ActionVariable(id = SELF, field = "id") String uuid) {
 		orderService.delete(parseUuid(uuid));
 		UiAgent.getCurrent().remove(self.closest(IRow.class));
-		serverLog(Executions.getCurrent(), "delete item");
+		serverLog("delete item");
 	}
 
 	@Action(type = Events.ON_CLICK)
@@ -128,7 +119,7 @@ public class DemoRichlet implements StatelessRichlet {
 		UiAgent.getCurrent().replaceChildren(Locator.ofId("shoppingBag").closest(IRows.class));
 		resetShoppingBag(parseUuid(orderId));
 		updateOrder(parseUuid(orderId));
-		serverLog(Executions.getCurrent(), "submit order");
+		serverLog("submit order");
 	}
 
 	private void resetShoppingBag(String orderId) {
@@ -145,7 +136,7 @@ public class DemoRichlet implements StatelessRichlet {
 		List<IRow> orderRow = new LinkedList<>();
 		if (!items.isEmpty()) {
 			for (Item o : items)
-				orderRow.add(initOrderRow(o.getProductName(), o.getSize(), o.getQuantity(), o.getPrice(), o.getSubTotal()));
+				orderRow.add(initOrderRow(o));
 		} else {
 			orderRow = Collections.emptyList();
 		}
@@ -155,17 +146,15 @@ public class DemoRichlet implements StatelessRichlet {
 	}
 
 	@Action(type = Events.ON_CHANGE)
-	public void doItemChange(RequestData requestData, Self self,
-								@ActionVariable(id = SELF, field = "id") String uuid,
+	public void doItemChange(RequestData requestData, Self self, @ActionVariable(id = SELF, field = "id") String uuid,
 								@ActionVariable(id = NEXT_SIBLING + NEXT_SIBLING) int quantity) {
 		String productName = (String) requestData.getData().get("value");
 		updateProductState(self, parseUuid(uuid), productName, quantity);
-		serverLog(Executions.getCurrent(), "change item");
+		serverLog("change item");
 	}
 
 	@Action(type = Events.ON_CHANGE)
-	public void doQuantityChange(RequestData requestData,
-								@ActionVariable(id = NEXT_SIBLING) Integer price,
+	public void doQuantityChange(RequestData requestData, @ActionVariable(id = NEXT_SIBLING) Integer price,
 								@ActionVariable(id = SELF, field = "id") String uuid) {
 		Integer quantity = (Integer) requestData.getData().get("value");
 		String itemId = parseUuid(uuid);
@@ -175,15 +164,14 @@ public class DemoRichlet implements StatelessRichlet {
 			UiAgent.getCurrent().smartUpdate(Locator.ofId(generateUuid(itemId, "subTotal")),
 					new ILabel.Updater().value(subTotal));
 		}
-		serverLog(Executions.getCurrent(), "change quantity");
+		serverLog("change quantity");
 	}
 
 	@Action(type = Events.ON_CHANGE)
-	public void doSizeChange(RequestData requestData, Self self,
-								@ActionVariable(id = SELF, field = "id") String uuid) {
+	public void doSizeChange(RequestData requestData, @ActionVariable(id = SELF, field = "id") String uuid) {
 		String size = (String) requestData.getData().get("value");
 		orderService.updateSize(parseUuid(uuid), size);
-		serverLog(Executions.getCurrent(), "change size");
+		serverLog("change size");
 	}
 
 	private void updateProductState(Self self, String uuid, String productName, int quantity) {
@@ -194,41 +182,59 @@ public class DemoRichlet implements StatelessRichlet {
 				.smartUpdate(CartLocator.getTotalLocator(self), new ILabel.Updater().value(subTotal));
 	}
 
+	private IColumns initShoppingBagColumn() {
+		return IColumns.of(
+				IColumn.of("ITEMS"),
+				IColumn.of("SIZE"),
+				IColumn.of("QUANTITY"),
+				IColumn.of("PRICE"),
+				IColumn.of("TOTAL"),
+				IColumn.DEFAULT);
+	}
+
+	private IRows initShoppingBagColumn(String orderId) {
+		return IRows.ofId("shoppingBagRows").withChildren(initShoppingBagItem(orderId));
+	}
+
 	private IRow initShoppingBagItem(String orderId) {
 		String uuid = orderService.insertItem(orderId);
 		int initQuantity = 1;
 		int initPrice = Item.priceTable.get("Cake");
-		return IRow.of(Arrays.asList(
-				ILabel.of(String.valueOf(uuid)).withVisible(false),
-				initProductList().withId(generateUuid(uuid, "productName")),
-				initProductSize().withId(generateUuid(uuid, "size")),
+		return IRow.of(
+				initProductList(uuid),
+				initProductSize(uuid),
 				ISpinner.ofId(generateUuid(uuid, "quantity")).withValue(initQuantity).withInstant(true)
 						.withAction(this::doQuantityChange),
 				ILabel.ofId(generateUuid(uuid, "price")).withValue(String.valueOf(initPrice)),
 				ILabel.ofId(generateUuid(uuid, "subTotal")).withValue(String.valueOf(initQuantity * initPrice)),
 				IButton.ofId(generateUuid(uuid, "delete")).withLabel("delete").withAction(this::doDelete)
-		));
+		);
 	}
 
-	private ICombobox initProductList() {
+	private ICombobox initProductList(String uuid) {
 		String initProductName = "Cake";
-		return ICombobox.of(
-				IComboitem.of("Cake").withImage("/image/cake.svg"),
-				IComboitem.of("Hamburger").withImage("/image/hamburger.svg"),
-				IComboitem.of("Pizza").withImage("/image/pizza.svg")
-		).withId("product-list").withValue(initProductName).withReadonly(true).withAction(this::doItemChange);
+		return ICombobox.ofId(generateUuid(uuid, "productName")).withChildren(
+					IComboitem.of("Cake").withImage("/image/cake.svg"),
+					IComboitem.of("Hamburger").withImage("/image/hamburger.svg"),
+					IComboitem.of("Pizza").withImage("/image/pizza.svg")
+				).withValue(initProductName)
+				.withReadonly(true)
+				.withAction(this::doItemChange);
 	}
 
-	private ICombobox initProductSize() {
+	private ICombobox initProductSize(String uuid) {
 		String initProductSize = "S";
-		return ICombobox.of(
-				IComboitem.of("S"),
-				IComboitem.of("M"),
-				IComboitem.of("L")
-		).withValue(initProductSize).withReadonly(true).withAction(this::doSizeChange);
+		return ICombobox.ofId(generateUuid(uuid, "size")).withChildren(
+					IComboitem.of("S"),
+					IComboitem.of("M"),
+					IComboitem.of("L")
+				).withValue(initProductSize)
+				.withReadonly(true)
+				.withAction(this::doSizeChange);
 	}
 
-	private IRow initOrderRow(String productName, String size, int quantity, int price, int subTotal) {
+	private IRow initOrderRow(Item item) {
+		String productName = item.getProductName();
 		String src = "/image/" + productName.toLowerCase() + ".svg";
 		return IRow.of(
 				IVlayout.of(
@@ -236,11 +242,11 @@ public class DemoRichlet implements StatelessRichlet {
 					ILabel.of(productName)
 				).withSclass("item-image"),
 				IVlayout.of(
-					ILabel.of("Size: " + size),
-					ILabel.of("Quantity: " + quantity),
-					ILabel.of("$ " + price)
+					ILabel.of("Size: " + item.getSize()),
+					ILabel.of("Quantity: " + item.getQuantity()),
+					ILabel.of("$ " + item.getPrice())
 				).withSclass("item-detail"),
-				ILabel.of("Sub Total: $ " + subTotal).withSclass("subTotal")
+				ILabel.of("Sub Total: $ " + item.getSubTotal()).withSclass("subTotal")
 		);
 	}
 
@@ -259,7 +265,7 @@ public class DemoRichlet implements StatelessRichlet {
 		return uuid.split("_")[0];
 	}
 
-	private void serverLog(Execution exc, String act) {
-		Clients.log(String.join(": ", String.valueOf(exc.getLocalAddr()), act));
+	private void serverLog(String act) {
+		Clients.log(String.join(": ", String.valueOf(Executions.getCurrent().getLocalAddr()), act));
 	}
 }
