@@ -13,10 +13,18 @@ package org.zkoss.zephyr.demo.richlet;
 
 import static java.util.Arrays.asList;
 import static org.zkoss.zephyr.action.ActionTarget.NEXT_SIBLING;
+import static org.zkoss.zephyr.action.ActionTarget.PARENT;
 import static org.zkoss.zephyr.action.ActionTarget.SELF;
+import static org.zkoss.zephyr.demo.util.Boilerplate.ORDER_TEMPLATE;
+import static org.zkoss.zephyr.demo.util.Boilerplate.PRODUCT_LIST_TEMPLATE;
+import static org.zkoss.zephyr.demo.util.Boilerplate.PRODUCT_SIZE_TEMPLATE;
+import static org.zkoss.zephyr.demo.util.Boilerplate.SHOPPING_BAG_COLUMN_TEMPLATE;
+import static org.zkoss.zephyr.demo.util.Boilerplate.summaryTemplate;
+import static org.zkoss.zephyr.demo.util.Helper.getTotalLocatorFromQuantity;
 import static org.zkoss.zephyr.demo.util.Helper.log;
 import static org.zkoss.zephyr.demo.util.Helper.nextUuid;
-import static org.zkoss.zephyr.demo.util.Helper.parseUuid;
+import static org.zkoss.zephyr.demo.util.Helper.parseItemId;
+import static org.zkoss.zephyr.demo.util.Helper.parseOrderId;
 import static org.zkoss.zephyr.demo.util.Helper.uuid;
 
 import java.util.List;
@@ -29,20 +37,17 @@ import org.zkoss.zephyr.annotation.RichletMapping;
 import org.zkoss.zephyr.demo.db.factory.DaoFactory;
 import org.zkoss.zephyr.demo.db.service.OrderService;
 import org.zkoss.zephyr.demo.pojo.Item;
+import org.zkoss.zephyr.demo.util.Boilerplate;
 import org.zkoss.zephyr.demo.util.Helper;
 import org.zkoss.zephyr.ui.Locator;
 import org.zkoss.zephyr.ui.Self;
 import org.zkoss.zephyr.ui.StatelessRichlet;
 import org.zkoss.zephyr.ui.UiAgent;
-import org.zkoss.zephyr.zpr.IAnyGroup;
 import org.zkoss.zephyr.zpr.IButton;
-import org.zkoss.zephyr.zpr.IColumn;
-import org.zkoss.zephyr.zpr.IColumns;
 import org.zkoss.zephyr.zpr.ICombobox;
 import org.zkoss.zephyr.zpr.IComboitem;
 import org.zkoss.zephyr.zpr.IComponent;
 import org.zkoss.zephyr.zpr.IDiv;
-import org.zkoss.zephyr.zpr.IFoot;
 import org.zkoss.zephyr.zpr.IFooter;
 import org.zkoss.zephyr.zpr.IGrid;
 import org.zkoss.zephyr.zpr.IImage;
@@ -61,12 +66,12 @@ public class DemoRichlet implements StatelessRichlet {
 	private static final String DEMO_CSS = "/css/shoppingCart.css";
 
 	@RichletMapping("")
-	public List<IComponent> demo() {
+	public List<IComponent> index() {
 		return asList(
 			IStyle.ofSrc(DEMO_CSS),
 			IVlayout.of(
 				initShoppingBag(),
-				initOrder()
+				ORDER_TEMPLATE
 			)
 		);
 	}
@@ -77,55 +82,23 @@ public class DemoRichlet implements StatelessRichlet {
 			ILabel.of("Shopping bag").withSclass("title"),
 			IGrid.ofId("shoppingBag").withHflex("1")
 				.withEmptyMessage("please add items.")
-				.withColumns(initShoppingBagColumn())
-				.withRows(initShoppingBagColumn(orderId)),
-			IDiv.of(IButton.of("add item +").withAction(this::addItem)
-				.withSclass("add-items")
-				.withId(uuid(orderId, "add")),
-			IButton.of("submit order").withAction(this::doSubmit)
-				.withSclass("submit")
-				.withId(uuid(orderId, "submit"))))
+				.withColumns(SHOPPING_BAG_COLUMN_TEMPLATE)
+				.withRows(intShoppingBagItems(orderId)),
+			initOrderButtons(orderId))
 		.withSclass("shoppingBag");
 	}
 
-	private IAnyGroup initOrder() {
-		return IVlayout.of(
-			ILabel.of("Your Order").withSclass("title"),
-			IGrid.DEFAULT.withRows(IRows.ofId("orderRows"))
-				.withFoot(IFoot.ofId("summary"))
-				.withHflex("1").withEmptyMessage("no order.").withSclass("order"))
-		.withSclass("order-layout");
-	}
-
 	private void updateOrder(String orderId) {
-		List<Item> items = orderService.selectOrder(orderId);
-		List<IRow> orderRow = items.stream().map(this::initOrderRow).collect(Collectors.toList());
-		IFooter orderSummary = initSummary(orderService.count(orderId), orderService.sum(orderId));
 		UiAgent.getCurrent()
-			.replaceChildren(Locator.ofId("orderRows"), orderRow)
-			.replaceChildren(Locator.ofId("summary"), orderSummary);
+			.replaceChildren(Locator.ofId("orderRows"),
+				orderService.selectOrder(orderId).stream()
+					.map(Boilerplate::orderItemTemplate)
+					.collect(Collectors.toList()))
+			.replaceChildren(Locator.ofId("summary"),
+				summaryTemplate(orderService.count(orderId), orderService.sum(orderId)));
 	}
 
-	private void updateProductState(Self self, String uuid, String productName, int quantity) {
-		int price = Item.PRODUCT_TABLE.get(productName).getPrice();
-		orderService.updateProduct(uuid, productName, quantity * price);
-		String subTotal = String.valueOf(quantity * price);
-		UiAgent.getCurrent()
-			.smartUpdate(Helper.getPriceLocator(self), new ILabel.Updater().value(String.valueOf(price)))
-			.smartUpdate(Helper.getTotalLocator(self), new ILabel.Updater().value(subTotal));
-	}
-
-	private IColumns initShoppingBagColumn() {
-		return IColumns.of(
-			IColumn.of("ITEMS"),
-			IColumn.of("SIZE"),
-			IColumn.of("QUANTITY"),
-			IColumn.of("PRICE"),
-			IColumn.of("TOTAL"),
-			IColumn.DEFAULT);
-	}
-
-	private IRows initShoppingBagColumn(String orderId) {
+	private IRows intShoppingBagItems(String orderId) {
 		return IRows.ofId("shoppingBagRows").withChildren(initShoppingBagItem(orderId));
 	}
 
@@ -134,128 +107,99 @@ public class DemoRichlet implements StatelessRichlet {
 		int initQuantity = 1;
 		int initPrice = Item.DEFAULT_PRODUCT.getPrice();
 		return IRow.of(
-			initProductList(uuid),
-			initProductSize(uuid),
-			ISpinner.ofId(uuid(uuid, "quantity"))
-				.withValue(initQuantity).withInstant(true)
+			initProductList(),
+			initProductSize(),
+			ISpinner.of(initQuantity).withInstant(true)
 				.withAction(this::doQuantityChange),
-			ILabel.ofId(uuid(uuid, "price")).withValue(String.valueOf(initPrice)),
-			ILabel.ofId(uuid(uuid, "subTotal")).withValue(String.valueOf(initQuantity * initPrice)),
-			IButton.ofId(uuid(uuid, "delete")).withLabel("delete").withAction(this::doDelete)
-		);
+			ILabel.of(String.valueOf(initPrice)),
+			ILabel.of(String.valueOf(initPrice)),
+			IButton.of("delete").withAction(this::doDelete)
+		).withId(uuid(orderId, uuid));
 	}
 
-	private ICombobox initProductList(String uuid) {
+	private IDiv initOrderButtons(String orderId) {
+		return IDiv.of(
+			IButton.of("add item +").withAction(this::addItem)
+				.withSclass("add-items")
+				.withId(uuid(orderId, "add")),
+			IButton.of("submit order").withAction(this::doSubmit)
+				.withSclass("submit")
+				.withId(uuid(orderId, "submit")));
+	}
+
+	private ICombobox initProductList() {
 		String initProductName = Item.DEFAULT_PRODUCT.getName();
-		return ICombobox.ofId(uuid(uuid, "productName"))
-			.withValue(initProductName)
+		return ICombobox.DEFAULT.withValue(initProductName)
 			.withReadonly(true)
 			.withAction(this::doItemChange)
-			.withChildren(
-				Item.PRODUCT_TABLE.values().stream()
-					.map((product -> IComboitem.of(
-							product.getName(), product.getIcon())))
-					.collect(Collectors.toList())
-			);
+			.withChildren(PRODUCT_LIST_TEMPLATE);
 	}
 
-	private ICombobox initProductSize(String uuid) {
+	private ICombobox initProductSize() {
 		String initProductSize = "S";
-		return ICombobox.ofId(uuid(uuid, "size")).withValue(initProductSize)
+		return ICombobox.DEFAULT.withValue(initProductSize)
 			.withReadonly(true)
 			.withAction(this::doSizeChange)
-			.withChildren(
-				IComboitem.of("S"),
-				IComboitem.of("M"),
-				IComboitem.of("L")
-			);
+			.withChildren(PRODUCT_SIZE_TEMPLATE);
 	}
-
-	private IRow initOrderRow(Item item) {
-		String productName = item.getProductName();
-		String src = Item.PRODUCT_TABLE.get(productName).getIcon();
-		return IRow.of(
-			IVlayout.of(
-				IImage.ofSize("70px", "70px").withSrc(src),
-				ILabel.of(productName)
-			).withSclass("item-image"),
-			IVlayout.of(
-				ILabel.of("Size: " + item.getSize()),
-				ILabel.of("Quantity: " + item.getQuantity()),
-				ILabel.of("$ " + item.getPrice())
-			).withSclass("item-detail"),
-			ILabel.of("Sub Total: $ " + item.getSubTotal()).withSclass("subTotal")
-		);
-	}
-
-	private IFooter initSummary(int count, int sum) {
-		return IFooter.of(
-			ILabel.of("My bag: " + count + " items, "),
-			ILabel.of(" Total price: $" + sum)
-		);
-	}
-
 
 	@Action(type = Events.ON_CLICK)
-	public void addItem(@ActionVariable(id = SELF, field = "id") String orderId) {
+	public void addItem(@ActionVariable(id = SELF, field = "id") String uuid) {
 		UiAgent.getCurrent().appendChild(Locator.ofId("shoppingBagRows"),
-				initShoppingBagItem(parseUuid(orderId)));
+				initShoppingBagItem(parseOrderId(uuid)));
 		log("add item");
 	}
 
 	@Action(type = Events.ON_CLICK)
-	public void doDelete(Self self, @ActionVariable(id = SELF, field = "id") String uuid) {
-		orderService.delete(parseUuid(uuid));
+	public void doDelete(Self self, @ActionVariable(id = PARENT, field = "id") String uuid) {
+		orderService.delete(parseItemId(uuid));
 		UiAgent.getCurrent().remove(self.closest(IRow.class));
 		log("delete item");
 	}
 
 	@Action(type = Events.ON_CLICK)
-	public void doSubmit(@ActionVariable(id = SELF, field = "id") String orderId) {
-		orderService.submit();
-		UiAgent.getCurrent().replaceChildren(Locator.ofId("shoppingBag").closest(IRows.class));
-		resetShoppingBag(parseUuid(orderId));
-		updateOrder(parseUuid(orderId));
+	public void doSubmit(@ActionVariable(id = SELF, field = "id") String uuid) {
+		final String orderId = parseOrderId(uuid);
+		orderService.submit(orderId);
+		UiAgent.getCurrent()
+				.replaceChildren(Locator.ofId("shoppingBagRows"))
+				.replaceWith(Locator.ofId(uuid).closest(IDiv.class),
+						initOrderButtons(nextUuid()));
+		updateOrder(orderId);
 		log("submit order");
 	}
 
-	private void resetShoppingBag(String orderId) {
-		String newOrderId = nextUuid();
-		UiAgent.getCurrent()
-			.replaceChildren(Locator.ofId("shoppingBagRows"))
-			.smartUpdate(Locator.ofId(uuid(orderId, "add")),
-					new IButton.Updater().id(uuid(newOrderId, "add")))
-			.smartUpdate(Locator.ofId(uuid(orderId, "submit")),
-					new IButton.Updater().id(uuid(newOrderId, "submit")));
-	}
-
 	@Action(type = Events.ON_CHANGE)
-	public void doItemChange(InputData data, Self self, @ActionVariable(id = SELF, field = "id") String uuid,
+	public void doItemChange(InputData data, Self self,
+			@ActionVariable(id = PARENT, field = "id") String uuid,
 			@ActionVariable(id = NEXT_SIBLING + NEXT_SIBLING) int quantity) {
 		String productName = data.getValue();
-		updateProductState(self, parseUuid(uuid), productName, quantity);
+		int price = Item.PRODUCT_TABLE.get(productName).getPrice();
+		orderService.updateProduct(parseItemId(uuid), productName, quantity * price);
+		String subTotal = String.valueOf(quantity * price);
+		UiAgent.getCurrent()
+				.smartUpdate(Helper.getPriceLocator(self), new ILabel.Updater().value(String.valueOf(price)))
+				.smartUpdate(Helper.getTotalLocator(self), new ILabel.Updater().value(subTotal));
 		log("change item");
 	}
 
 	@Action(type = Events.ON_CHANGE)
-	public void doQuantityChange(InputData data, @ActionVariable(id = NEXT_SIBLING) Integer price,
-			@ActionVariable(id = SELF, field = "id") String uuid) {
-		Integer quantity = Integer.valueOf(data.getValue());
-		String itemId = parseUuid(uuid);
-		orderService.updateQuantity(itemId, quantity, price);
-		if (quantity != null && price != null) {
-			String subTotal = String.valueOf((price * quantity));
-			UiAgent.getCurrent().smartUpdate(Locator.ofId(
-				uuid(itemId, "subTotal")),
-				new ILabel.Updater().value(subTotal));
+	public void doQuantityChange(Self self,
+			InputData data, @ActionVariable(id = NEXT_SIBLING) Integer price,
+			@ActionVariable(id = PARENT, field = "id") String uuid) {
+		if (price != null) {
+			Integer quantity = Integer.valueOf(data.getValue());
+			orderService.updateQuantity(parseItemId(uuid), quantity, price);
+			UiAgent.getCurrent().smartUpdate(
+					getTotalLocatorFromQuantity(self),
+				new ILabel.Updater().value(String.valueOf((price * quantity))));
 			log("change quantity");
 		}
 	}
 
 	@Action(type = Events.ON_CHANGE)
-	public void doSizeChange(InputData data, @ActionVariable(id = SELF, field = "id") String uuid) {
-		String size = data.getValue();
-		orderService.updateSize(parseUuid(uuid), size);
+	public void doSizeChange(InputData data, @ActionVariable(id = PARENT, field = "id") String uuid) {
+		orderService.updateSize(parseItemId(uuid), data.getValue());
 		log("change size");
 	}
 }

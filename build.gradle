@@ -12,13 +12,7 @@ idea {
 	}
 }
 
-description = 'zephyr demo project'
-
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
-}
+description = 'ZK 10 Shopping Cart Demo'
 
 ext.javadocOptions = {
 	options.author true
@@ -52,8 +46,6 @@ targetCompatibility = '1.8'
 dependencies {
 	implementation "org.zkoss.zk:zul:${zkVersion}"
 	implementation "org.zkoss.zephyr:zephyr:${version}"
-	annotationProcessor "org.immutables:value:$immutablesVersion"
-	compileOnly "org.immutables:value:$immutablesVersion"
 	implementation 'org.postgresql:postgresql:42.3.1'
 	implementation 'org.slf4j:slf4j-jdk14:1.7.30'
 }

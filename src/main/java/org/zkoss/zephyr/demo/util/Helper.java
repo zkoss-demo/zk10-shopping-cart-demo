@@ -31,16 +31,23 @@ public class Helper {
 		return getPriceLocator(self).nextSibling();
 	}
 
+	public static Locator getTotalLocatorFromQuantity(Self self) {
+		return self.nextSibling().nextSibling();
+	}
+
 	public static String nextUuid() {
 		return UUID.randomUUID().toString().substring(0, 6);
 	}
 
 	public static String uuid(String uuid, String name) {
-		return uuid + "_" + name;
+		return uuid + "-" + name;
 	}
 
-	public static String parseUuid(String uuid) {
-		return uuid.split("_")[0];
+	public static String parseOrderId(String uuid) {
+		return uuid.split("-")[0];
+	}
+	public static String parseItemId(String uuid) {
+		return uuid.split("-")[1];
 	}
 
 	public static void log(String act) {

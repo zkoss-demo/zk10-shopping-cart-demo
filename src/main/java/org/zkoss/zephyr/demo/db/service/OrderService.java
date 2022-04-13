@@ -32,29 +32,28 @@ public class OrderService {
 		return dao.insertItem(orderId);
 	}
 
-	public void updateProduct(String orderId, String productName, Integer subTotal) {
-		dao.updateProduct(Integer.parseInt(orderId), productName, subTotal);
+	public void updateProduct(String itemId, String productName, Integer subTotal) {
+		dao.updateProduct(Integer.parseInt(itemId), productName, subTotal);
 	}
 
-	public void updateSize(String orderId, String size) {
-		dao.updateSize(Integer.parseInt(orderId), size);
-
+	public void updateSize(String itemId, String size) {
+		dao.updateSize(Integer.parseInt(itemId), size);
 	}
 
-	public void updateQuantity(String orderId, int quantity, Integer price) {
-		dao.updateQuantity(Integer.parseInt(orderId), quantity, price);
+	public void updateQuantity(String itemId, int quantity, Integer price) {
+		dao.updateQuantity(Integer.parseInt(itemId), quantity, price);
 	}
 
 	public List<Item> selectOrder(String orderId) {
 		return dao.selectOrder(orderId);
 	}
 
-	public void submit() {
-		dao.submit();
+	public void submit(String orderId) {
+		dao.submit(orderId);
 	}
 
-	public void delete(String id) {
-		dao.delete(Integer.parseInt(id));
+	public void delete(String itemId) {
+		dao.delete(Integer.parseInt(itemId));
 	}
 
 	public int sum(String orderId) { return dao.sum(orderId); }

@@ -14,6 +14,7 @@ package org.zkoss.zephyr.demo.db.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
@@ -46,12 +47,11 @@ public class OrderDao extends BaseDao {
 	private static final String UPDATE_STATUS = "update ORDER_LIST set STATUS = ? WHERE ID = ?";
 
 	private static final String UPDATE_STATUS_TO_COMPLETE = "update ORDER_LIST set STATUS = " + Item.COMPLETE +
-			" WHERE STATUS = " + Item.NOT_COMPLETE;
+			" WHERE ORDER_ID = ? AND STATUS = " + Item.NOT_COMPLETE;
 
 	private static final String SUM_SUB_TOTAL = "select SUM(SUB_TOTAL) FROM ORDER_LIST where ORDER_ID = ? AND STATUS = " + Item.COMPLETE;
 
 	private static final String ITEMS_COUNT = "select SUM(QUANTITY) FROM ORDER_LIST where ORDER_ID = ? AND STATUS = " + Item.COMPLETE;
-
 
 	private static final Logger log = LoggerFactory.getLogger(OrderDao.class);
 
@@ -91,33 +91,43 @@ public class OrderDao extends BaseDao {
 
 
 	private void updateProductName(int uuid, String productName) {
-		try (Connection con = getConnection();
-			PreparedStatement stat = con.prepareStatement(UPDATE_PRODUCT_NAME)) {
-			stat.setString(1, productName);
-			stat.setInt(2, uuid);
-			stat.executeUpdate();
+		try {
+			execute(uuid, productName, UPDATE_PRODUCT_NAME);
 		} catch (Exception e) {
 			log.error("Update product name exception :" + e);
 		}
 	}
 
-	public void updateSize(int uuid, String size) {
+	private void execute(int uuid, String value, String statement)
+			throws SQLException {
 		try (Connection con = getConnection();
-			PreparedStatement stat = con.prepareStatement(UPDATE_SIZE)) {
-			stat.setString(1, size);
+				PreparedStatement stat = con.prepareStatement(statement)) {
+			stat.setString(1, value);
 			stat.setInt(2, uuid);
 			stat.executeUpdate();
+		}
+	}
+	private void execute(int uuid, int value, String statement)
+			throws SQLException {
+		try (Connection con = getConnection();
+				PreparedStatement stat = con.prepareStatement(statement)) {
+			stat.setInt(1, value);
+			stat.setInt(2, uuid);
+			stat.executeUpdate();
+		}
+	}
+
+	public void updateSize(int uuid, String size) {
+		try {
+			execute(uuid, size, UPDATE_SIZE);
 		} catch (Exception e) {
 			log.error("Update size exception :" + e);
 		}
 	}
 
 	public void updateQuantity(int uuid, int quantity, int price) {
-		try (Connection con = getConnection();
-			PreparedStatement stat = con.prepareStatement(UPDATE_QUANTITY)) {
-			stat.setInt(1, quantity);
-			stat.setInt(2, uuid);
-			stat.executeUpdate();
+		try {
+			execute(uuid, quantity, UPDATE_QUANTITY);
 		} catch (Exception e) {
 			log.error("Update quantity exception :" + e);
 		}
@@ -136,22 +146,16 @@ public class OrderDao extends BaseDao {
 	}
 
 	private void updateSubTotal(int uuid, int subTotal) {
-		try (Connection con = getConnection();
-			PreparedStatement stat = con.prepareStatement(UPDATE_SUB_TOTAL)) {
-			stat.setInt(1, subTotal);
-			stat.setInt(2, uuid);
-			stat.executeUpdate();
+		try {
+			execute(uuid, subTotal, UPDATE_SUB_TOTAL);
 		} catch (Exception e) {
 			log.error("Update subTotal exception :" + e);
 		}
 	}
 
 	private void updateStatus(int uuid, int status) {
-		try (Connection con = getConnection();
-			PreparedStatement stat = con.prepareStatement(UPDATE_STATUS)) {
-			stat.setInt(1, status);
-			stat.setInt(2, uuid);
-			stat.executeUpdate();
+		try {
+			execute(uuid, status, UPDATE_STATUS);
 		} catch (Exception e) {
 			log.error("Update status exception :" + e);
 		}
@@ -161,9 +165,10 @@ public class OrderDao extends BaseDao {
 		updateStatus(uuid, Item.DELETE);
 	}
 
-	public void submit() {
+	public void submit(String orderId) {
 		try (Connection con = getConnection();
 			PreparedStatement stat = con.prepareStatement(UPDATE_STATUS_TO_COMPLETE)) {
+			stat.setString(1, orderId);
 			stat.executeUpdate();
 		} catch (Exception e) {
 			log.error("Submit exception :" + e);
