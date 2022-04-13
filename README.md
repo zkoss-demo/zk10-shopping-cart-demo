@@ -7,11 +7,12 @@
 
 ## How to run
 ### Run War
-`./gradlew war`
+Run with `./gradlew war` in terminal
 
 Note: make sure ./build/libs/shopping_cart_demo.war exist.
 
 ### Run docker containers for development
+Run with ` cd ./docker` in terminal
 * `$ docker-compose up -d`: create and start the containers in background
 * `$ docker-compose down -v`: stop and remove the containers with all its volumes
 
