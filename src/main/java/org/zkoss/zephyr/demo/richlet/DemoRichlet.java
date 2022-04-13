@@ -230,15 +230,17 @@ public class DemoRichlet implements StatelessRichlet {
 	}
 
 	@Action(type = Events.ON_CHANGE)
-	public void doItemChange(Self self, @ActionVariable(id = SELF, field = "id") String uuid,
-			@ActionVariable(id = SELF) String productName, @ActionVariable(id = NEXT_SIBLING + NEXT_SIBLING) int quantity) {
+	public void doItemChange(InputData data, Self self, @ActionVariable(id = SELF, field = "id") String uuid,
+			@ActionVariable(id = NEXT_SIBLING + NEXT_SIBLING) int quantity) {
+		String productName = data.getValue();
 		updateProductState(self, parseUuid(uuid), productName, quantity);
 		log("change item");
 	}
 
 	@Action(type = Events.ON_CHANGE)
-	public void doQuantityChange(@ActionVariable(id = NEXT_SIBLING) Integer price,
-			@ActionVariable(id = SELF) Integer quantity, @ActionVariable(id = SELF, field = "id") String uuid) {
+	public void doQuantityChange(InputData data, @ActionVariable(id = NEXT_SIBLING) Integer price,
+			@ActionVariable(id = SELF, field = "id") String uuid) {
+		Integer quantity = Integer.valueOf(data.getValue());
 		String itemId = parseUuid(uuid);
 		orderService.updateQuantity(itemId, quantity, price);
 		if (quantity != null && price != null) {
