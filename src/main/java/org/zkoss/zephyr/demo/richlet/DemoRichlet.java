@@ -88,16 +88,6 @@ public class DemoRichlet implements StatelessRichlet {
 		.withSclass("shoppingBag");
 	}
 
-	private void updateOrder(String orderId) {
-		UiAgent.getCurrent()
-			.replaceChildren(Locator.ofId("orderRows"),
-				orderService.selectOrder(orderId).stream()
-					.map(Boilerplate::orderItemTemplate)
-					.collect(Collectors.toList()))
-			.replaceChildren(Locator.ofId("summary"),
-				summaryTemplate(orderService.count(orderId), orderService.sum(orderId)));
-	}
-
 	private IRows intShoppingBagItems(String orderId) {
 		return IRows.ofId("shoppingBagRows").withChildren(initShoppingBagItem(orderId));
 	}
@@ -129,7 +119,7 @@ public class DemoRichlet implements StatelessRichlet {
 
 	private ICombobox initProductList() {
 		String initProductName = Item.DEFAULT_PRODUCT.getName();
-		return ICombobox.DEFAULT.withValue(initProductName)
+		return ICombobox.of(initProductName)
 			.withReadonly(true)
 			.withAction(this::doItemChange)
 			.withChildren(PRODUCT_LIST_TEMPLATE);
@@ -137,7 +127,7 @@ public class DemoRichlet implements StatelessRichlet {
 
 	private ICombobox initProductSize() {
 		String initProductSize = "S";
-		return ICombobox.DEFAULT.withValue(initProductSize)
+		return ICombobox.of(initProductSize)
 			.withReadonly(true)
 			.withAction(this::doSizeChange)
 			.withChildren(PRODUCT_SIZE_TEMPLATE);
@@ -162,10 +152,19 @@ public class DemoRichlet implements StatelessRichlet {
 		final String orderId = parseOrderId(uuid);
 		orderService.submit(orderId);
 		UiAgent.getCurrent()
+				// empty the shopping bag rows
 				.replaceChildren(Locator.ofId("shoppingBagRows"))
+				// render the order table content
+				.replaceChildren(Locator.ofId("orderRows"),
+					orderService.selectOrder(orderId).stream()
+							.map(Boilerplate::orderItemTemplate)
+							.collect(Collectors.toList()))
+				// update the summary content
+				.replaceChildren(Locator.ofId("summary"),
+						summaryTemplate(orderService.count(orderId), orderService.sum(orderId)))
+				// reset the order buttons with a new orderId
 				.replaceWith(Locator.ofId(uuid).closest(IDiv.class),
 						initOrderButtons(nextUuid()));
-		updateOrder(orderId);
 		log("submit order");
 	}
 
@@ -187,14 +186,12 @@ public class DemoRichlet implements StatelessRichlet {
 	public void doQuantityChange(Self self,
 			InputData data, @ActionVariable(id = NEXT_SIBLING) Integer price,
 			@ActionVariable(id = PARENT, field = "id") String uuid) {
-		if (price != null) {
-			Integer quantity = Integer.valueOf(data.getValue());
-			orderService.updateQuantity(parseItemId(uuid), quantity, price);
-			UiAgent.getCurrent().smartUpdate(
-					getTotalLocatorFromQuantity(self),
-				new ILabel.Updater().value(String.valueOf((price * quantity))));
-			log("change quantity");
-		}
+		Integer quantity = Integer.valueOf(data.getValue());
+		orderService.updateQuantity(parseItemId(uuid), quantity, price);
+		UiAgent.getCurrent().smartUpdate(
+				getTotalLocatorFromQuantity(self),
+			new ILabel.Updater().value(String.valueOf((price * quantity))));
+		log("change quantity");
 	}
 
 	@Action(type = Events.ON_CHANGE)
