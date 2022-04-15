@@ -134,21 +134,21 @@ public class DemoRichlet implements StatelessRichlet {
 	}
 
 	@Action(type = Events.ON_CLICK)
-	public void addItem(@ActionVariable(id = SELF, field = "id") String uuid) {
+	public void addItem(@ActionVariable(targetId = SELF, field = "id") String uuid) {
 		UiAgent.getCurrent().appendChild(Locator.ofId("shoppingBagRows"),
 				initShoppingBagItem(parseOrderId(uuid)));
 		log("add item");
 	}
 
 	@Action(type = Events.ON_CLICK)
-	public void doDelete(Self self, @ActionVariable(id = PARENT, field = "id") String uuid) {
+	public void doDelete(Self self, @ActionVariable(targetId = PARENT, field = "id") String uuid) {
 		orderService.delete(parseItemId(uuid));
 		UiAgent.getCurrent().remove(self.closest(IRow.class));
 		log("delete item");
 	}
 
 	@Action(type = Events.ON_CLICK)
-	public void doSubmit(@ActionVariable(id = SELF, field = "id") String uuid) {
+	public void doSubmit(@ActionVariable(targetId = SELF, field = "id") String uuid) {
 		final String orderId = parseOrderId(uuid);
 		orderService.submit(orderId);
 		UiAgent.getCurrent()
@@ -170,8 +170,8 @@ public class DemoRichlet implements StatelessRichlet {
 
 	@Action(type = Events.ON_CHANGE)
 	public void doItemChange(InputData data, Self self,
-			@ActionVariable(id = PARENT, field = "id") String uuid,
-			@ActionVariable(id = NEXT_SIBLING + NEXT_SIBLING) int quantity) {
+			@ActionVariable(targetId = PARENT, field = "id") String uuid,
+			@ActionVariable(targetId = NEXT_SIBLING + NEXT_SIBLING) int quantity) {
 		String productName = data.getValue();
 		int price = Item.PRODUCT_TABLE.get(productName).getPrice();
 		orderService.updateProduct(parseItemId(uuid), productName, quantity * price);
@@ -184,8 +184,8 @@ public class DemoRichlet implements StatelessRichlet {
 
 	@Action(type = Events.ON_CHANGE)
 	public void doQuantityChange(Self self,
-			InputData data, @ActionVariable(id = NEXT_SIBLING) Integer price,
-			@ActionVariable(id = PARENT, field = "id") String uuid) {
+			InputData data, @ActionVariable(targetId = NEXT_SIBLING) Integer price,
+			@ActionVariable(targetId = PARENT, field = "id") String uuid) {
 		Integer quantity = Integer.valueOf(data.getValue());
 		orderService.updateQuantity(parseItemId(uuid), quantity, price);
 		UiAgent.getCurrent().smartUpdate(
@@ -195,7 +195,7 @@ public class DemoRichlet implements StatelessRichlet {
 	}
 
 	@Action(type = Events.ON_CHANGE)
-	public void doSizeChange(InputData data, @ActionVariable(id = PARENT, field = "id") String uuid) {
+	public void doSizeChange(InputData data, @ActionVariable(targetId = PARENT, field = "id") String uuid) {
 		orderService.updateSize(parseItemId(uuid), data.getValue());
 		log("change size");
 	}

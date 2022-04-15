@@ -14,20 +14,6 @@ idea {
 
 description = 'ZK 10 Shopping Cart Demo'
 
-ext.javadocOptions = {
-	options.author true
-	options.use true
-	options.version true
-	options.showFromProtected()
-	options.addStringOption("charset", "UTF-8")
-	options.addBooleanOption("notimestamp", false)
-	options.addBooleanOption("-allow-script-in-comments", true)
-	options.addBooleanOption('Xdoclint:none', true)
-	options.addBooleanOption("breakiterator", true)
-	options.addStringOption("-source ${version}")
-	options.docFilesSubDirs = true
-}
-
 repositories {
 	mavenLocal()
 	mavenCentral()
@@ -45,7 +31,7 @@ targetCompatibility = '1.8'
 
 dependencies {
 	implementation "org.zkoss.zk:zul:${zkVersion}"
-	implementation "org.zkoss.zephyr:zephyr:${version}"
+	implementation "org.zkoss.zephyr:zephyr:${zkVersion}"
 	implementation 'org.postgresql:postgresql:42.3.1'
 	implementation 'org.slf4j:slf4j-jdk14:1.7.30'
 }
