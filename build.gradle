@@ -34,6 +34,18 @@ dependencies {
 	implementation "org.zkoss.zephyr:zephyr:${zkVersion}"
 	implementation 'org.postgresql:postgresql:42.3.1'
 	implementation 'org.slf4j:slf4j-jdk14:1.7.30'
+
+
+	testImplementation 'org.zkoss.test:zk-webdriver:104.0.5112.79'
+	testImplementation "org.junit.jupiter:junit-jupiter-api:5.8.1"
+	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.8.1"
+}
+
+test {
+	useJUnitPlatform()
+
+	// for zk-webdriver test case
+	systemProperty "zkWebdriverContextPath", ""
 }
 
 war {

@@ -27,6 +27,10 @@
 			<param-name>basePackages</param-name>
 			<param-value>org.zkoss.zephyr.demo</param-value>
 		</init-param>
+		<init-param>
+			<param-name>cloudMode</param-name>
+			<param-value>true</param-value>
+		</init-param>
 	</filter>
 
 	<filter-mapping>
