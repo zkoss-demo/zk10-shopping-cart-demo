@@ -14,18 +14,8 @@ package org.zkoss.zephyr.demo.util;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+import org.zkoss.stateless.sul.*;
 import org.zkoss.zephyr.demo.pojo.Item;
-import org.zkoss.zephyr.zpr.IColumn;
-import org.zkoss.zephyr.zpr.IColumns;
-import org.zkoss.zephyr.zpr.IComboitem;
-import org.zkoss.zephyr.zpr.IFoot;
-import org.zkoss.zephyr.zpr.IFooter;
-import org.zkoss.zephyr.zpr.IGrid;
-import org.zkoss.zephyr.zpr.IImage;
-import org.zkoss.zephyr.zpr.ILabel;
-import org.zkoss.zephyr.zpr.IRow;
-import org.zkoss.zephyr.zpr.IRows;
-import org.zkoss.zephyr.zpr.IVlayout;
 
 /**
  * Boilerplate for shopping cart.

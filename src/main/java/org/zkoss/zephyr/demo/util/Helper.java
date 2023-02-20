@@ -11,12 +11,12 @@ Copyright (C) 2022 Potix Corporation. All Rights Reserved.
 */
 package org.zkoss.zephyr.demo.util;
 
-import java.util.UUID;
-
-import org.zkoss.zephyr.ui.Locator;
-import org.zkoss.zephyr.ui.Self;
+import org.zkoss.stateless.ui.Self;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.stateless.ui.Locator;
+
+import java.util.UUID;
 
 /**
  * Helper class for this demo.
