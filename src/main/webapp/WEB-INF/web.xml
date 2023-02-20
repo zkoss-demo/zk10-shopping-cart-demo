@@ -22,7 +22,7 @@
 
 	<filter>
 		<filter-name>DispatcherRichletFilter</filter-name>
-		<filter-class>org.zkoss.stateless.ui.http.DispatcherRichletFilter</filter-class>
+		<filter-class>org.zkoss.zephyr.ui.http.DispatcherRichletFilter</filter-class>
 		<init-param>
 			<param-name>basePackages</param-name>
 			<param-value>org.zkoss.zephyr.demo</param-value>

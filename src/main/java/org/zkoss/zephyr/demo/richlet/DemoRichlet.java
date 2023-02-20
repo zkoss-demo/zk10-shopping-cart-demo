@@ -12,6 +12,9 @@ Copyright (C) 2022 Potix Corporation. All Rights Reserved.
 package org.zkoss.zephyr.demo.richlet;
 
 import static java.util.Arrays.asList;
+import static org.zkoss.zephyr.action.ActionTarget.NEXT_SIBLING;
+import static org.zkoss.zephyr.action.ActionTarget.PARENT;
+import static org.zkoss.zephyr.action.ActionTarget.SELF;
 import static org.zkoss.zephyr.demo.util.Boilerplate.ORDER_TEMPLATE;
 import static org.zkoss.zephyr.demo.util.Boilerplate.PRODUCT_LIST_TEMPLATE;
 import static org.zkoss.zephyr.demo.util.Boilerplate.PRODUCT_SIZE_TEMPLATE;
@@ -27,16 +30,33 @@ import static org.zkoss.zephyr.demo.util.Helper.uuid;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.zkoss.stateless.action.ActionTarget;
-import org.zkoss.stateless.action.data.InputData;
-import org.zkoss.stateless.annotation.*;
-import org.zkoss.stateless.sul.*;
-import org.zkoss.stateless.ui.*;
+import org.zkoss.zephyr.action.data.InputData;
+import org.zkoss.zephyr.annotation.Action;
+import org.zkoss.zephyr.annotation.ActionVariable;
+import org.zkoss.zephyr.annotation.RichletMapping;
 import org.zkoss.zephyr.demo.db.factory.DaoFactory;
 import org.zkoss.zephyr.demo.db.service.OrderService;
 import org.zkoss.zephyr.demo.pojo.Item;
 import org.zkoss.zephyr.demo.util.Boilerplate;
 import org.zkoss.zephyr.demo.util.Helper;
+import org.zkoss.zephyr.ui.Locator;
+import org.zkoss.zephyr.ui.Self;
+import org.zkoss.zephyr.ui.StatelessRichlet;
+import org.zkoss.zephyr.ui.UiAgent;
+import org.zkoss.zephyr.zpr.IButton;
+import org.zkoss.zephyr.zpr.ICombobox;
+import org.zkoss.zephyr.zpr.IComboitem;
+import org.zkoss.zephyr.zpr.IComponent;
+import org.zkoss.zephyr.zpr.IDiv;
+import org.zkoss.zephyr.zpr.IFooter;
+import org.zkoss.zephyr.zpr.IGrid;
+import org.zkoss.zephyr.zpr.IImage;
+import org.zkoss.zephyr.zpr.ILabel;
+import org.zkoss.zephyr.zpr.IRow;
+import org.zkoss.zephyr.zpr.IRows;
+import org.zkoss.zephyr.zpr.ISpinner;
+import org.zkoss.zephyr.zpr.IStyle;
+import org.zkoss.zephyr.zpr.IVlayout;
 import org.zkoss.zk.ui.event.Events;
 
 @RichletMapping("/shoppingCart")
@@ -114,21 +134,21 @@ public class DemoRichlet implements StatelessRichlet {
 	}
 
 	@Action(type = Events.ON_CLICK)
-	public void addItem(@ActionVariable(targetId = ActionTarget.SELF, field = "id") String uuid) {
+	public void addItem(@ActionVariable(targetId = SELF, field = "id") String uuid) {
 		UiAgent.getCurrent().appendChild(Locator.ofId("shoppingBagRows"),
 				initShoppingBagItem(parseOrderId(uuid)));
 		log("add item");
 	}
 
 	@Action(type = Events.ON_CLICK)
-	public void doDelete(Self self, @ActionVariable(targetId = ActionTarget.PARENT, field = "id") String uuid) {
+	public void doDelete(Self self, @ActionVariable(targetId = PARENT, field = "id") String uuid) {
 		orderService.delete(parseItemId(uuid));
 		UiAgent.getCurrent().remove(self.closest(IRow.class));
 		log("delete item");
 	}
 
 	@Action(type = Events.ON_CLICK)
-	public void doSubmit(@ActionVariable(targetId = ActionTarget.SELF, field = "id") String uuid) {
+	public void doSubmit(@ActionVariable(targetId = SELF, field = "id") String uuid) {
 		final String orderId = parseOrderId(uuid);
 		orderService.submit(orderId);
 		UiAgent.getCurrent()
@@ -150,8 +170,8 @@ public class DemoRichlet implements StatelessRichlet {
 
 	@Action(type = Events.ON_CHANGE)
 	public void doItemChange(InputData data, Self self,
-							 @ActionVariable(targetId = ActionTarget.PARENT, field = "id") String uuid,
-							 @ActionVariable(targetId = ActionTarget.NEXT_SIBLING + ActionTarget.NEXT_SIBLING) int quantity) {
+			@ActionVariable(targetId = PARENT, field = "id") String uuid,
+			@ActionVariable(targetId = NEXT_SIBLING + NEXT_SIBLING) int quantity) {
 		String productName = data.getValue();
 		int price = Item.PRODUCT_TABLE.get(productName).getPrice();
 		orderService.updateProduct(parseItemId(uuid), productName, quantity * price);
@@ -164,8 +184,8 @@ public class DemoRichlet implements StatelessRichlet {
 
 	@Action(type = Events.ON_CHANGE)
 	public void doQuantityChange(Self self,
-			InputData data, @ActionVariable(targetId = ActionTarget.NEXT_SIBLING) Integer price,
-			@ActionVariable(targetId = ActionTarget.PARENT, field = "id") String uuid) {
+			InputData data, @ActionVariable(targetId = NEXT_SIBLING) Integer price,
+			@ActionVariable(targetId = PARENT, field = "id") String uuid) {
 		Integer quantity = Integer.valueOf(data.getValue());
 		orderService.updateQuantity(parseItemId(uuid), quantity, price);
 		UiAgent.getCurrent().smartUpdate(
@@ -175,7 +195,7 @@ public class DemoRichlet implements StatelessRichlet {
 	}
 
 	@Action(type = Events.ON_CHANGE)
-	public void doSizeChange(InputData data, @ActionVariable(targetId = ActionTarget.PARENT, field = "id") String uuid) {
+	public void doSizeChange(InputData data, @ActionVariable(targetId = PARENT, field = "id") String uuid) {
 		orderService.updateSize(parseItemId(uuid), data.getValue());
 		log("change size");
 	}
