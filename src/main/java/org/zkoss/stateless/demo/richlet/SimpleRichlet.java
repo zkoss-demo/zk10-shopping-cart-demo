@@ -14,14 +14,11 @@ import java.util.List;
 @RichletMapping("/simple")
 public class SimpleRichlet implements StatelessRichlet {
 
-    private static final String SIMPLE_CSS = "/css/simple.css";
-
     @RichletMapping("")
     public List<IComponent> index() {
         //Creating IComponents using the IComponent.of pattern
         //This allow for page declaration matching the actual page structure
         return asList(
-                IStyle.ofSrc(SIMPLE_CSS),
                 IVlayout.of(asList(
                         ILabel.of("Simple form demo").withSclass("main-title"),
                         IHlayout.of(asList(
