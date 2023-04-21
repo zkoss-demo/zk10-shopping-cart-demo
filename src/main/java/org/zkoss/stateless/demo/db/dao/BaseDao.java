@@ -9,7 +9,7 @@
 
 Copyright (C) 2022 Potix Corporation. All Rights Reserved.
 */
-package org.zkoss.zephyr.demo.db.dao;
+package org.zkoss.stateless.demo.db.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

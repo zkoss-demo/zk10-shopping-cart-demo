@@ -9,7 +9,7 @@
 
 Copyright (C) 2022 Potix Corporation. All Rights Reserved.
 */
-package org.zkoss.zephyr.demo.richlet;
+package org.zkoss.stateless.demo.richlet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

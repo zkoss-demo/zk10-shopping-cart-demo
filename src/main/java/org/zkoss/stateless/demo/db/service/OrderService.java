@@ -9,12 +9,12 @@
 
 Copyright (C) 2022 Potix Corporation. All Rights Reserved.
 */
-package org.zkoss.zephyr.demo.db.service;
+package org.zkoss.stateless.demo.db.service;
 
 import java.util.List;
 
-import org.zkoss.zephyr.demo.db.dao.OrderDao;
-import org.zkoss.zephyr.demo.pojo.Item;
+import org.zkoss.stateless.demo.db.dao.OrderDao;
+import org.zkoss.stateless.demo.pojo.Item;
 
 /**
  * An order service provides applications to communicate with the database.

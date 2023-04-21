@@ -9,9 +9,8 @@
 
 Copyright (C) 2022 Potix Corporation. All Rights Reserved.
 */
-package org.zkoss.zephyr.demo.pojo;
+package org.zkoss.stateless.demo.pojo;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

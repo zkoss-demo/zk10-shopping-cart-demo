@@ -9,7 +9,7 @@
 
 Copyright (C) 2022 Potix Corporation. All Rights Reserved.
 */
-package org.zkoss.zephyr.demo.db.dao;
+package org.zkoss.stateless.demo.db.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,7 +22,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.zkoss.zephyr.demo.pojo.Item;
+import org.zkoss.stateless.demo.pojo.Item;
 
 /**
  * @author katherine

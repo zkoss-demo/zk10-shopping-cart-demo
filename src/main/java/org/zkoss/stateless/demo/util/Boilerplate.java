@@ -9,23 +9,13 @@
 
 Copyright (C) 2022 Potix Corporation. All Rights Reserved.
 */
-package org.zkoss.zephyr.demo.util;
+package org.zkoss.stateless.demo.util;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import org.zkoss.zephyr.demo.pojo.Item;
-import org.zkoss.zephyr.zpr.IColumn;
-import org.zkoss.zephyr.zpr.IColumns;
-import org.zkoss.zephyr.zpr.IComboitem;
-import org.zkoss.zephyr.zpr.IFoot;
-import org.zkoss.zephyr.zpr.IFooter;
-import org.zkoss.zephyr.zpr.IGrid;
-import org.zkoss.zephyr.zpr.IImage;
-import org.zkoss.zephyr.zpr.ILabel;
-import org.zkoss.zephyr.zpr.IRow;
-import org.zkoss.zephyr.zpr.IRows;
-import org.zkoss.zephyr.zpr.IVlayout;
+import org.zkoss.stateless.demo.pojo.Item;
+import org.zkoss.stateless.sul.*;
 
 /**
  * Boilerplate for shopping cart.

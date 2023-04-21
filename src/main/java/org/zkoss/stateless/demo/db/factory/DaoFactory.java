@@ -9,9 +9,9 @@
 
 Copyright (C) 2022 Potix Corporation. All Rights Reserved.
 */
-package org.zkoss.zephyr.demo.db.factory;
+package org.zkoss.stateless.demo.db.factory;
 
-import org.zkoss.zephyr.demo.db.service.OrderService;
+import org.zkoss.stateless.demo.db.service.OrderService;
 
 /**
  * @author katherine

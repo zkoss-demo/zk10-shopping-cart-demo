@@ -1,6 +1,6 @@
 plugins {
 	id "java"
-	id "org.gretty" version "3.0.6"
+	id "org.gretty" version "3.1.1"
 	id 'idea'
 	id 'war'
 }
@@ -31,7 +31,7 @@ targetCompatibility = '1.8'
 
 dependencies {
 	implementation "org.zkoss.zk:zul:${zkVersion}"
-	implementation "org.zkoss.zephyr:zephyr:${zkVersion}"
+	implementation "org.zkoss.zk:stateless:${zkVersion}"
 	implementation 'org.postgresql:postgresql:42.3.1'
 	implementation 'org.slf4j:slf4j-jdk14:1.7.30'
 
