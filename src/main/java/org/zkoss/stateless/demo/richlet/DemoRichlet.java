@@ -78,12 +78,13 @@ public class DemoRichlet implements StatelessRichlet {
 
 	private IDiv initOrderButtons(String orderId) {
 		return IDiv.of(
-			IButton.of("add item +").withAction(this::addItem)
-				.withSclass("add-items")
-				.withId(uuid(orderId, "add")),
-			IButton.of("submit order").withAction(this::doSubmit)
-				.withSclass("submit")
-				.withId(uuid(orderId, "submit")));
+					IButton.of("add item +").withAction(this::addItem)
+							.withSclass("add-items")
+							.withId(uuid(orderId, "add")),
+					IButton.of("submit order").withAction(this::doSubmit)
+							.withSclass("submit")
+							.withId(uuid(orderId, "submit")))
+				.withId("button-area");
 	}
 
 	private ICombobox initProductList() {
@@ -132,7 +133,7 @@ public class DemoRichlet implements StatelessRichlet {
 				.replaceChildren(Locator.ofId("summary"),
 						Boilerplate.summaryTemplate(orderService.count(orderId), orderService.sum(orderId)))
 				// reset the order buttons with a new orderId
-				.replaceWith(Locator.ofId(uuid).closest(IDiv.class),
+				.replaceWith(Locator.ofId("button-area"),
 						initOrderButtons(nextUuid()));
 		log("submit order");
 	}
