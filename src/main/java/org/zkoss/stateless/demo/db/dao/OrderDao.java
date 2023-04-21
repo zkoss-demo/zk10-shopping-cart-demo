@@ -11,11 +11,7 @@ Copyright (C) 2022 Potix Corporation. All Rights Reserved.
 */
 package org.zkoss.stateless.demo.db.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,7 +23,7 @@ import org.zkoss.stateless.demo.pojo.Item;
 /**
  * @author katherine
  */
-public class OrderDao extends BaseDao {
+public class OrderDao {
 
 	private static final String INSERT_ITEM = "insert into ORDER_LIST(PRODUCT_NAME,SIZE,QUANTITY,PRICE,SUB_TOTAL,STATUS,ORDER_ID)"
 			+ "values('Cake','S',1,100,100,1,?)";
@@ -54,7 +50,22 @@ public class OrderDao extends BaseDao {
 	private static final String ITEMS_COUNT = "select SUM(QUANTITY) FROM ORDER_LIST where ORDER_ID = ? AND STATUS = " + Item.COMPLETE;
 
 	private static final Logger log = LoggerFactory.getLogger(OrderDao.class);
+	static final String DRIVER = "org.postgresql.Driver";
+	static final String USER = "zephyr_admin";
+	static final String URL = "jdbc:postgresql://zephyr_db:5432/zephyr_db";
+	static final String PASS = "zephyr_pwd";
 
+	public Connection getConnection() {
+		try {
+			Class.forName(OrderDao.DRIVER);
+			return DriverManager.getConnection(OrderDao.URL, OrderDao.USER, OrderDao.PASS);
+		} catch (ClassNotFoundException e) {
+			OrderDao.log.error("DriverClassNotFound :" + e);
+		} catch (SQLException x) {
+			OrderDao.log.error("Exception :" + x);
+		}
+		return null;
+	}
 	public String insertItem(String orderId) {
 		int id = -1;
 		try (Connection con = getConnection();

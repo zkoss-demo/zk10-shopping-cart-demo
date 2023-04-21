@@ -16,11 +16,11 @@ import org.zkoss.stateless.demo.db.service.OrderService;
 /**
  * @author katherine
  */
-public enum DaoFactory {
+public enum ServiceFactory {
 	INSTANCE(new OrderService());
 	final OrderService service;
-	DaoFactory(OrderService dao) {
-		this.service = dao;
+	ServiceFactory(OrderService service) {
+		this.service = service;
 	}
 
 	public OrderService getService() {
