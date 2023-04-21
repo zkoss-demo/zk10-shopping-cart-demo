@@ -18,7 +18,7 @@ import org.zkoss.stateless.demo.pojo.Item;
 import org.zkoss.stateless.demo.util.*;
 import org.zkoss.stateless.sul.*;
 import org.zkoss.stateless.ui.*;
-import org.zkoss.stateless.demo.db.factory.DaoFactory;
+import org.zkoss.stateless.demo.db.factory.ServiceFactory;
 import org.zkoss.stateless.demo.db.service.OrderService;
 import org.zkoss.zk.ui.event.Events;
 
@@ -31,7 +31,7 @@ import static org.zkoss.stateless.demo.util.Helper.*;
 @RichletMapping("/shoppingCart")
 public class DemoRichlet implements StatelessRichlet {
 
-	private static final OrderService orderService = DaoFactory.INSTANCE.getService();
+	private static final OrderService orderService = ServiceFactory.INSTANCE.getService();
 	private static final String DEMO_CSS = "/css/shoppingCart.css";
 
 	@RichletMapping("")
@@ -65,6 +65,8 @@ public class DemoRichlet implements StatelessRichlet {
 		String uuid = orderService.insertItem(orderId);
 		int initQuantity = 1;
 		int initPrice = Item.DEFAULT_PRODUCT.getPrice();
+		String id = uuid(orderId, uuid);
+		log("add item "+ id);
 		return IRow.of(
 			initProductList(),
 			initProductSize(),
@@ -73,7 +75,7 @@ public class DemoRichlet implements StatelessRichlet {
 			ILabel.of(String.valueOf(initPrice)),
 			ILabel.of(String.valueOf(initPrice)),
 			IButton.of("delete").withAction(this::doDelete)
-		).withId(uuid(orderId, uuid));
+		).withId(id);
 	}
 
 	private IDiv initOrderButtons(String orderId) {
@@ -107,14 +109,13 @@ public class DemoRichlet implements StatelessRichlet {
 	public void addItem(@ActionVariable(targetId = ActionTarget.SELF, field = "id") String uuid) {
 		UiAgent.getCurrent().appendChild(Locator.ofId("shoppingBagRows"),
 				initShoppingBagItem(parseOrderId(uuid)));
-		log("add item");
 	}
 
 	@Action(type = Events.ON_CLICK)
 	public void doDelete(Self self, @ActionVariable(targetId = ActionTarget.PARENT, field = "id") String uuid) {
 		orderService.delete(parseItemId(uuid));
-		UiAgent.getCurrent().remove(self.closest(IRow.class));
-		log("delete item");
+		UiAgent.getCurrent().remove(Locator.ofId(uuid));
+		log("delete item " + uuid);
 	}
 
 	@Action(type = Events.ON_CLICK)
@@ -135,7 +136,7 @@ public class DemoRichlet implements StatelessRichlet {
 				// reset the order buttons with a new orderId
 				.replaceWith(Locator.ofId("button-area"),
 						initOrderButtons(nextUuid()));
-		log("submit order");
+		log("submit order " + orderId);
 	}
 
 	@Action(type = Events.ON_CHANGE)
