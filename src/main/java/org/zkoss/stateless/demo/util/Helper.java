@@ -38,7 +38,7 @@ public class Helper {
 		return UUID.randomUUID().toString().substring(0, 6);
 	}
 
-	public static String uuid(String uuid, String name) {
+	public static String combine(String uuid, String name) {
 		return uuid + "-" + name;
 	}
 

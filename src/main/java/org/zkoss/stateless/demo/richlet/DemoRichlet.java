@@ -65,7 +65,7 @@ public class DemoRichlet implements StatelessRichlet {
 		String uuid = orderService.insertItem(orderId);
 		int initQuantity = 1;
 		int initPrice = Item.DEFAULT_PRODUCT.getPrice();
-		String id = uuid(orderId, uuid);
+		String id = combine(orderId, uuid);
 		log("add item "+ id);
 		return IRow.of(
 			initProductList(),
@@ -82,10 +82,10 @@ public class DemoRichlet implements StatelessRichlet {
 		return IDiv.of(
 					IButton.of("add item +").withAction(this::addItem)
 							.withSclass("add-items")
-							.withId(uuid(orderId, "add")),
+							.withId(combine(orderId, "add")),
 					IButton.of("submit order").withAction(this::doSubmit)
 							.withSclass("submit")
-							.withId(uuid(orderId, "submit")))
+							.withId(combine(orderId, "submit")))
 				.withId("button-area");
 	}
 
@@ -142,7 +142,7 @@ public class DemoRichlet implements StatelessRichlet {
 	@Action(type = Events.ON_CHANGE)
 	public void doItemChange(InputData data, Self self,
 							 @ActionVariable(targetId = ActionTarget.PARENT, field = "id") String uuid,
-							 @ActionVariable(targetId = ActionTarget.NEXT_SIBLING + ActionTarget.NEXT_SIBLING) int quantity) {
+							 @ActionVariable(targetId = ActionTarget.NEXT_SIBLING + ActionTarget.NEXT_SIBLING) Integer quantity) {
 		String productName = data.getValue();
 		int price = Item.PRODUCT_TABLE.get(productName).getPrice();
 		orderService.updateProduct(parseItemId(uuid), productName, quantity * price);

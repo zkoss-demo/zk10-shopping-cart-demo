@@ -13,7 +13,7 @@ package org.zkoss.stateless.demo.db.service;
 
 import java.util.List;
 
-import org.zkoss.stateless.demo.db.dao.OrderDao;
+import org.zkoss.stateless.demo.db.dao.*;
 import org.zkoss.stateless.demo.pojo.Item;
 
 /**
@@ -25,7 +25,7 @@ public class OrderService {
 	private OrderDao dao;
 
 	public OrderService() {
-		dao = new OrderDao();
+		dao = new OrderDaoImpl();
 	}
 
 	public String insertItem(String orderId) {
