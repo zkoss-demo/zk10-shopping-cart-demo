@@ -23,7 +23,7 @@ import org.zkoss.zk.ui.util.Clients;
  */
 public class Helper {
 	public static Locator getPriceLocator(Self self) {
-		return self.nextSibling().nextSibling().nextSibling();
+		return self.nextSibling().nextSibling();
 	}
 
 	public static Locator getTotalLocator(Self self) {

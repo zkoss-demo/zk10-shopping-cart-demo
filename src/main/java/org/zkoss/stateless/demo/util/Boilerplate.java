@@ -30,7 +30,7 @@ public class Boilerplate {
 			.withSclass("order-layout");
 
 	public static final IColumns SHOPPING_BAG_COLUMN_TEMPLATE = IColumns.of(
-			IColumn.of("ITEMS"), IColumn.of("SIZE"), IColumn.of("QUANTITY"),
+			IColumn.of("ITEMS"), IColumn.of("QUANTITY"),
 			IColumn.of("PRICE"), IColumn.of("TOTAL"), IColumn.DEFAULT);
 
 	public static final Iterable<IComboitem> PRODUCT_LIST_TEMPLATE = Item.PRODUCT_TABLE.values()
