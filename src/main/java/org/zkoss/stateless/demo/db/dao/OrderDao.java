@@ -2,7 +2,6 @@ package org.zkoss.stateless.demo.db.dao;
 
 import org.zkoss.stateless.demo.pojo.Item;
 
-import java.sql.*;
 import java.util.List;
 
 public interface OrderDao {
@@ -24,7 +23,7 @@ public interface OrderDao {
     void updateProduct(int uuid, String productName, Integer subTotal);
 
     void updateSize(int uuid, String size);
-    int sum(String orderId);
+    int totalPrice(String orderId);
 
     int count(String orderId) ;
 }

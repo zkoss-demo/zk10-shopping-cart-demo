@@ -70,7 +70,7 @@ public class OrderInMemory implements OrderDao{
     }
 
     @Override
-    public int sum(String orderId) {
+    public int totalPrice(String orderId) {
         return 0;
     }
 

@@ -56,7 +56,7 @@ public class OrderService {
 		dao.delete(Integer.parseInt(itemId));
 	}
 
-	public int sum(String orderId) { return dao.sum(orderId); }
+	public int sum(String orderId) { return dao.totalPrice(orderId); }
 
 	public int count(String orderId) { return dao.count(orderId); }
 

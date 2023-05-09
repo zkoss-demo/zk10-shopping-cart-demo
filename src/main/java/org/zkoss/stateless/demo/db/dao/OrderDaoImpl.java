@@ -45,7 +45,7 @@ public class OrderDaoImpl implements OrderDao{
 	private static final String UPDATE_STATUS_TO_COMPLETE = "update ORDER_LIST set STATUS = " + Item.COMPLETE +
 			" WHERE ORDER_ID = ? AND STATUS = " + Item.NOT_COMPLETE;
 
-	private static final String SUM_SUB_TOTAL = "select SUM(SUB_TOTAL) FROM ORDER_LIST where ORDER_ID = ? AND STATUS = " + Item.COMPLETE;
+	private static final String SUM_SUB_TOTAL = "select SUM(PRICE * QUANTITY) FROM ORDER_LIST where ORDER_ID = ? AND STATUS = " + Item.COMPLETE;
 
 	private static final String ITEMS_COUNT = "select SUM(QUANTITY) FROM ORDER_LIST where ORDER_ID = ? AND STATUS = " + Item.COMPLETE;
 
@@ -192,7 +192,7 @@ public class OrderDaoImpl implements OrderDao{
 		updateSubTotal(uuid, subTotal);
 	}
 
-	public int sum(String orderId) {
+	public int totalPrice(String orderId) {
 		int sum = 0;
 		try (Connection con = getConnection();
 			PreparedStatement stat = con.prepareStatement(SUM_SUB_TOTAL)
