@@ -52,7 +52,7 @@ public class OrderDaoImpl implements OrderDao{
 	private static final Logger log = LoggerFactory.getLogger(OrderDaoImpl.class);
 	static final String DRIVER = "org.postgresql.Driver";
 	static final String USER = "zephyr_admin";
-	static final String URL = "jdbc:postgresql://zephyr_db:5432/zephyr_db";
+	static final String URL = "jdbc:postgresql://localhost:5432/zephyr_db";
 	static final String PASS = "zephyr_pwd";
 
 	private Connection getConnection() {
@@ -62,6 +62,7 @@ public class OrderDaoImpl implements OrderDao{
 		} catch (ClassNotFoundException e) {
 			log.error("DriverClassNotFound :" , e);
 		} catch (SQLException x) {
+			log.error("connect with {}, {}, {}", OrderDaoImpl.URL, OrderDaoImpl.USER, OrderDaoImpl.PASS);
 			log.error("Exception :" , x);
 		}
 		return null;

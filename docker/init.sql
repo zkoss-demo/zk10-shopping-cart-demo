@@ -1,3 +1,7 @@
+CREATE USER zephyr_admin WITH PASSWORD 'zephyr_pwd';
+CREATE DATABASE zephyr_db OWNER zephyr_admin;
+-- connect as user zephyr_admin to ensure the access right of the created table
+\c zephyr_db zephyr_admin
 DROP TABLE IF EXISTS ORDER_LIST;
 CREATE TABLE ORDER_LIST (
     ID SERIAL PRIMARY KEY,

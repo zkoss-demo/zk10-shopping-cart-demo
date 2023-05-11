@@ -14,12 +14,6 @@ RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg ma
 # Install PostgreSQL 12
 RUN apt-get update && apt-get install -y postgresql-12 postgresql-client-12
 
-# Set PostgreSQL environment variables
-ENV POSTGRES_USER zephyr_admin
-ENV POSTGRES_DB zephyr_db
-ENV POSTGRES_PASSWORD zephyr_pwd
-ENV POSTGRES_HOST_AUTH_METHOD trust
-
 # Add initialization scripts
 COPY init.sql /docker-entrypoint-initdb.d/
 
@@ -40,6 +34,7 @@ EXPOSE 8080
 
 # Add a script to start Tomcat and PostgreSQL
 COPY start.sh /start.sh
+COPY pg_hba.conf /pg_hba.conf
 RUN chmod +x /start.sh
 
 CMD ["/start.sh"]
