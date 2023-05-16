@@ -1,0 +1,15 @@
+{
+  "serviceName": "shoppingcart",
+  "containers": {
+    "shoppingcart": {
+      "image": ":shoppingcart.latest.5",
+      "ports": {
+        "80": "HTTP"
+      }
+    }
+  },
+  "publicEndpoint": {
+    "containerName": "shoppingcart",
+    "containerPort": 80
+  }
+}
