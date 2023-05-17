@@ -1,5 +1,5 @@
 # Use a base image that includes Java
-FROM openjdk:8-jdk
+FROM amd64/openjdk:8-jdk
 
 # Install required packages
 RUN apt-get update && apt-get install -y curl wget gnupg2 ca-certificates lsb-release
@@ -8,8 +8,8 @@ RUN apt-get update && apt-get install -y curl wget gnupg2 ca-certificates lsb-re
 # Add the PostgreSQL GPG key
 RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 
-# Add PostgreSQL's repository
-RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" > /etc/apt/sources.list.d/pgdg.list
+# Add PostgreSQL's repository (for amd64 architecture)
+RUN echo "deb [arch=amd64] http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" > /etc/apt/sources.list.d/pgdg.list
 
 # Install PostgreSQL 12
 RUN apt-get update && apt-get install -y postgresql-12 postgresql-client-12
