@@ -2,14 +2,14 @@
   "serviceName": "shoppingcart",
   "containers": {
     "shoppingcart": {
-      "image": ":shoppingcart.latest.5",
+      "image": ":shoppingcart.latest.10",
       "ports": {
-        "80": "HTTP"
+        "8080": "HTTP"
       }
     }
   },
   "publicEndpoint": {
     "containerName": "shoppingcart",
-    "containerPort": 80
+    "containerPort": 8080
   }
 }
