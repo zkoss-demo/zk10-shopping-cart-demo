@@ -7,7 +7,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class OrderInMemory implements OrderDao{
     static AtomicInteger currentId = new AtomicInteger(0);
-    static List<Item> itemList = new ArrayList<Item>();
     static List<Order> orderList = new ArrayList();
 
     @Override
@@ -46,12 +45,27 @@ public class OrderInMemory implements OrderDao{
     }
     @Override
     public void updateQuantity(int uuid, int quantity, int price) {
-
+        for (Order order : orderList) {
+            for (Item item : order.getItems()) {
+                if (item.getId().equals(uuid)){
+                    item.setQuantity(quantity);
+                    item.setPrice(price);
+                    break;
+                }
+            }
+        }
     }
 
     @Override
     public void delete(int uuid) {
-
+        for (Order order : orderList) {
+            for (Item item : order.getItems()) {
+                if (item.getId().equals(uuid)){
+                    order.getItems().remove(item);
+                    break;
+                }
+            }
+        }
     }
 
     @Override
@@ -61,7 +75,14 @@ public class OrderInMemory implements OrderDao{
 
     @Override
     public void updateProduct(int uuid, String productName, Integer subTotal) {
-
+        for (Order order : orderList) {
+            for (Item item : order.getItems()) {
+                if (item.getId().equals(uuid)){
+                    item.setProductName(productName);
+                    break;
+                }
+            }
+        }
     }
 
     @Override
@@ -71,7 +92,16 @@ public class OrderInMemory implements OrderDao{
 
     @Override
     public int totalPrice(String orderId) {
-        return 0;
+        int totalPrice = 0;
+        for (Order order : orderList) {
+            if (order.getId().equals(orderId)){
+                for (Item item : order.getItems()){
+                    totalPrice += item.getSubTotal();
+                }
+                break;
+            }
+        }
+        return totalPrice;
     }
 
     @Override

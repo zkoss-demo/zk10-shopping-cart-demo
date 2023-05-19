@@ -13,7 +13,9 @@ idea {
 }
 
 description = 'ZK 10 Shopping Cart Demo'
-
+gretty {
+	contextPath = '/shopping_cart_demo'
+}
 
 repositories {
 	mavenLocal()
@@ -34,8 +36,8 @@ repositories {
 apply plugin: 'java'
 apply plugin: 'maven-publish'
 
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
+sourceCompatibility = '1.11'
+targetCompatibility = '1.11'
 
 dependencies {
 	implementation "org.zkoss.zk:zul:${zkVersion}"
