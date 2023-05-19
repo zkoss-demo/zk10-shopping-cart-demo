@@ -48,12 +48,13 @@ public class DemoRichlet implements StatelessRichlet {
 	private IVlayout initShoppingBag() {
 		final String orderId = Helper.nextUuid();
 		return IVlayout.of(
-			ILabel.of("Shopping bag").withSclass("title"),
+			ILabel.of("Shopping Cart").withSclass("title"),
+			renderOrderButtons(orderId),
 			IGrid.ofId("shoppingBag").withHflex("1")
 				.withEmptyMessage("please add items.")
 				.withColumns(Boilerplate.SHOPPING_BAG_COLUMN_TEMPLATE)
-				.withRows(intShoppingBagItems(orderId)),
-			initOrderButtons(orderId))
+				.withRows(intShoppingBagItems(orderId))
+				)
 		.withSclass("shoppingBag");
 	}
 
@@ -77,7 +78,7 @@ public class DemoRichlet implements StatelessRichlet {
 		).withId(id);
 	}
 
-	private IDiv initOrderButtons(String orderId) {
+	private IDiv renderOrderButtons(String orderId) {
 		return IDiv.of(
 					IButton.of("add item +").withAction(this::addItem)
 							.withSclass("add-items")
@@ -134,7 +135,7 @@ public class DemoRichlet implements StatelessRichlet {
 						Boilerplate.summaryTemplate(orderService.count(orderId), orderService.sum(orderId)))
 				// reset the order buttons with a new orderId
 				.replaceWith(Locator.ofId("button-area"),
-						initOrderButtons(nextUuid()));
+						renderOrderButtons(nextUuid()));
 		log("submit order " + orderId);
 	}
 

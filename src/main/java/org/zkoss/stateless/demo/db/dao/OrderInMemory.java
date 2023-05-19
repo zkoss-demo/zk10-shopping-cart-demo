@@ -106,6 +106,11 @@ public class OrderInMemory implements OrderDao{
 
     @Override
     public int count(String orderId) {
+        for (Order order : orderList) {
+            if (order.getId().equals(orderId)){
+                return order.getItems().size();
+            }
+        }
         return 0;
     }
 }
