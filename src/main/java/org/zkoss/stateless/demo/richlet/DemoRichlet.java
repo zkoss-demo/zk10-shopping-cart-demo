@@ -71,10 +71,10 @@ public class DemoRichlet implements StatelessRichlet {
 		return IRow.of(
 			renderProductDropdownList(),
 			ISpinner.of(initQuantity).withInstant(true)
-				.withAction(this::doQuantityChange),
+				.withAction(this::changeQuantity),
 			ILabel.of(String.valueOf(initPrice)),
 			ILabel.of(String.valueOf(initPrice)),
-			IButton.of("delete").withAction(this::doDelete)
+			IButton.of("delete").withAction(this::deleteItem)
 		).withId(id);
 	}
 
@@ -83,7 +83,7 @@ public class DemoRichlet implements StatelessRichlet {
 					IButton.of("add item +").withAction(this::addItem)
 							.withSclass("add-items")
 							.withId(combine(orderId, "add")),
-					IButton.of("submit order").withAction(this::doSubmit)
+					IButton.of("submit order").withAction(this::submitOrder)
 							.withSclass("submit")
 							.withId(combine(orderId, "submit")))
 				.withId("button-area");
@@ -93,7 +93,7 @@ public class DemoRichlet implements StatelessRichlet {
 		String initProductName = Item.DEFAULT_PRODUCT.getName();
 		return ICombobox.of(initProductName)
 			.withReadonly(true)
-			.withAction(this::doItemChange)
+			.withAction(this::changeProduct)
 			.withChildren(Boilerplate.PRODUCT_LIST_TEMPLATE);
 	}
 
@@ -101,7 +101,7 @@ public class DemoRichlet implements StatelessRichlet {
 		String initProductSize = "S";
 		return ICombobox.of(initProductSize)
 			.withReadonly(true)
-			.withAction(this::doSizeChange)
+			.withAction(this::changeSize)
 			.withChildren(Boilerplate.PRODUCT_SIZE_TEMPLATE);
 	}
 
@@ -112,14 +112,14 @@ public class DemoRichlet implements StatelessRichlet {
 	}
 
 	@Action(type = Events.ON_CLICK)
-	public void doDelete(Self self, @ActionVariable(targetId = ActionTarget.PARENT, field = "id") String uuid) {
+	public void deleteItem(Self self, @ActionVariable(targetId = ActionTarget.PARENT, field = "id") String uuid) {
 		orderService.delete(parseItemId(uuid));
 		UiAgent.getCurrent().remove(Locator.ofId(uuid));
 		log("delete item " + uuid);
 	}
 
 	@Action(type = Events.ON_CLICK)
-	public void doSubmit(@ActionVariable(targetId = ActionTarget.SELF, field = "id") String uuid) {
+	public void submitOrder(@ActionVariable(targetId = ActionTarget.SELF, field = "id") String uuid) {
 		final String orderId = parseOrderId(uuid);
 		orderService.submit(orderId);
 		UiAgent.getCurrent()
@@ -140,9 +140,9 @@ public class DemoRichlet implements StatelessRichlet {
 	}
 
 	@Action(type = Events.ON_CHANGE)
-	public void doItemChange(Self self, InputData data,
-							 @ActionVariable(targetId = ActionTarget.PARENT, field = "id") String uuid,
-							 @ActionVariable(targetId = ActionTarget.NEXT_SIBLING) Integer quantity) {
+	public void changeProduct(Self self, InputData data,
+							  @ActionVariable(targetId = ActionTarget.PARENT, field = "id") String uuid,
+							  @ActionVariable(targetId = ActionTarget.NEXT_SIBLING) Integer quantity) {
 		String productName = data.getValue();
 		int price = Item.PRODUCT_TABLE.get(productName).getPrice();
 		orderService.updateProduct(parseItemId(uuid), productName, quantity * price);
@@ -154,9 +154,9 @@ public class DemoRichlet implements StatelessRichlet {
 	}
 
 	@Action(type = Events.ON_CHANGE)
-	public void doQuantityChange(Self self,
-			InputData quantityData, @ActionVariable(targetId = ActionTarget.NEXT_SIBLING) Integer price,
-			@ActionVariable(targetId = ActionTarget.PARENT, field = "id") String uuid) {
+	public void changeQuantity(Self self,
+							   InputData quantityData, @ActionVariable(targetId = ActionTarget.NEXT_SIBLING) Integer price,
+							   @ActionVariable(targetId = ActionTarget.PARENT, field = "id") String uuid) {
 		Integer quantity = Integer.valueOf(quantityData.getValue());
 		orderService.updateQuantity(parseItemId(uuid), quantity, price);
 		UiAgent.getCurrent().smartUpdate(
@@ -166,7 +166,7 @@ public class DemoRichlet implements StatelessRichlet {
 	}
 
 	@Action(type = Events.ON_CHANGE)
-	public void doSizeChange(InputData sizeData, @ActionVariable(targetId = ActionTarget.PARENT, field = "id") String uuid) {
+	public void changeSize(InputData sizeData, @ActionVariable(targetId = ActionTarget.PARENT, field = "id") String uuid) {
 		orderService.updateSize(parseItemId(uuid), sizeData.getValue());
 		log("change size");
 	}
