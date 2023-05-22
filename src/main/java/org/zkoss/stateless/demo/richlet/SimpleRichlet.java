@@ -17,7 +17,7 @@ public class SimpleRichlet implements StatelessRichlet {
     @RichletMapping("")
     public List<IComponent> index() {
         //Creating IComponents using the IComponent.of pattern
-        //This allow for page declaration matching the actual page structure
+        //This allows for page declaration matching the actual page structure
         return asList(
                 IVlayout.of(asList(
                         ILabel.of("Simple form demo").withSclass("main-title"),

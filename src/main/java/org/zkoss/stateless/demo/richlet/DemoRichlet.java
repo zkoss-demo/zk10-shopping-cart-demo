@@ -39,13 +39,13 @@ public class DemoRichlet implements StatelessRichlet {
 		return asList(
 			IStyle.ofSrc(DEMO_CSS),
 			IVlayout.of(
-				initShoppingBag(),
+				renderShoppingBag(),
 				Boilerplate.ORDER_TEMPLATE
 			)
 		);
 	}
 
-	private IVlayout initShoppingBag() {
+	private IVlayout renderShoppingBag() {
 		final String orderId = Helper.nextUuid();
 		return IVlayout.of(
 			ILabel.of("Shopping Cart").withSclass("title"),
@@ -53,23 +53,23 @@ public class DemoRichlet implements StatelessRichlet {
 			IGrid.ofId("shoppingBag").withHflex("1")
 				.withEmptyMessage("please add items.")
 				.withColumns(Boilerplate.SHOPPING_BAG_COLUMN_TEMPLATE)
-				.withRows(intShoppingBagItems(orderId))
+				.withRows(renderShoppingBagItems(orderId))
 				)
 		.withSclass("shoppingBag");
 	}
 
-	private IRows intShoppingBagItems(String orderId) {
-		return IRows.ofId("shoppingBagRows").withChildren(initShoppingBagItem(orderId));
+	private IRows renderShoppingBagItems(String orderId) {
+		return IRows.ofId("shoppingBagRows").withChildren(renderShoppingBagItem(orderId));
 	}
 
-	private IRow initShoppingBagItem(String orderId) {
+	private IRow renderShoppingBagItem(String orderId) {
 		String uuid = orderService.insertItem(orderId);
 		int initQuantity = 1;
 		int initPrice = Item.DEFAULT_PRODUCT.getPrice();
 		String id = combine(orderId, uuid);
 		log("add item "+ id);
 		return IRow.of(
-			initProductList(),
+			renderProductDropdownList(),
 			ISpinner.of(initQuantity).withInstant(true)
 				.withAction(this::doQuantityChange),
 			ILabel.of(String.valueOf(initPrice)),
@@ -89,7 +89,7 @@ public class DemoRichlet implements StatelessRichlet {
 				.withId("button-area");
 	}
 
-	private ICombobox initProductList() {
+	private ICombobox renderProductDropdownList() {
 		String initProductName = Item.DEFAULT_PRODUCT.getName();
 		return ICombobox.of(initProductName)
 			.withReadonly(true)
@@ -108,7 +108,7 @@ public class DemoRichlet implements StatelessRichlet {
 	@Action(type = Events.ON_CLICK)
 	public void addItem(@ActionVariable(targetId = ActionTarget.SELF, field = "id") String uuid) {
 		UiAgent.getCurrent().appendChild(Locator.ofId("shoppingBagRows"),
-				initShoppingBagItem(parseOrderId(uuid)));
+				renderShoppingBagItem(parseOrderId(uuid)));
 	}
 
 	@Action(type = Events.ON_CLICK)

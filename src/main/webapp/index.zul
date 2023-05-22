@@ -1,0 +1,7 @@
+<zk>
+stateless component demo
+    <vlayout>
+    <a href="simple">simple</a>
+    <a href="shoppingCart">shoppingCart</a>
+    </vlayout>
+</zk>
