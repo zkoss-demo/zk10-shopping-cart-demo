@@ -14,15 +14,15 @@ public interface OrderDao {
     String insertItem(String orderId);
     List<Item> selectOrder(String orderId);
 
-    void updateQuantity(int uuid, int quantity, int price);
+    void updateQuantity(int itemId, int quantity, int price);
 
-    void delete(int uuid);
+    void delete(int itemId);
 
     void submit(String orderId);
 
-    void updateProduct(int uuid, String productName, Integer subTotal);
+    void updateProduct(int itemId, String productName, Integer subTotal);
 
-    void updateSize(int uuid, String size);
+    void updateSize(int itemId, String size);
     int totalPrice(String orderId);
 
     int count(String orderId) ;

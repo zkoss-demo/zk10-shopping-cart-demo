@@ -44,10 +44,10 @@ public class OrderInMemory implements OrderDao{
         return result;
     }
     @Override
-    public void updateQuantity(int uuid, int quantity, int price) {
+    public void updateQuantity(int itemId, int quantity, int price) {
         for (Order order : orderList) {
             for (Item item : order.getItems()) {
-                if (item.getId().equals(uuid)){
+                if (item.getId().equals(itemId)){
                     item.setQuantity(quantity);
                     item.setPrice(price);
                     break;
@@ -57,10 +57,10 @@ public class OrderInMemory implements OrderDao{
     }
 
     @Override
-    public void delete(int uuid) {
+    public void delete(int itemId) {
         for (Order order : orderList) {
             for (Item item : order.getItems()) {
-                if (item.getId().equals(uuid)){
+                if (item.getId().equals(itemId)){
                     order.getItems().remove(item);
                     break;
                 }
@@ -74,10 +74,10 @@ public class OrderInMemory implements OrderDao{
     }
 
     @Override
-    public void updateProduct(int uuid, String productName, Integer subTotal) {
+    public void updateProduct(int itemId, String productName, Integer subTotal) {
         for (Order order : orderList) {
             for (Item item : order.getItems()) {
-                if (item.getId().equals(uuid)){
+                if (item.getId().equals(itemId)){
                     item.setProductName(productName);
                     break;
                 }
@@ -86,7 +86,7 @@ public class OrderInMemory implements OrderDao{
     }
 
     @Override
-    public void updateSize(int uuid, String size) {
+    public void updateSize(int itemId, String size) {
 
     }
 

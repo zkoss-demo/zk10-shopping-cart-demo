@@ -2,6 +2,9 @@ package org.zkoss.stateless.demo.pojo;
 
 import java.util.*;
 
+/**
+ * An Order can have multiple items.
+ */
 public class Order {
     private String id;
     private List<Item> items = new LinkedList<>();

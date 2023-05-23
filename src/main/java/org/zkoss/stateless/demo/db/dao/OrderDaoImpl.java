@@ -102,79 +102,79 @@ public class OrderDaoImpl implements OrderDao{
 	}
 
 
-	private void updateProductName(int uuid, String productName) {
+	private void updateProductName(int itemId, String productName) {
 		try {
-			execute(uuid, productName, UPDATE_PRODUCT_NAME);
+			execute(itemId, productName, UPDATE_PRODUCT_NAME);
 		} catch (Exception e) {
 			log.error("Update product name exception :" , e);
 		}
 	}
 
-	private void execute(int uuid, String value, String statement)
+	private void execute(int itemId, String value, String statement)
 			throws SQLException {
 		try (Connection con = getConnection();
 				PreparedStatement stat = con.prepareStatement(statement)) {
 			stat.setString(1, value);
-			stat.setInt(2, uuid);
+			stat.setInt(2, itemId);
 			stat.executeUpdate();
 		}
 	}
-	private void execute(int uuid, int value, String statement)
+	private void execute(int itemId, int value, String statement)
 			throws SQLException {
 		try (Connection con = getConnection();
 				PreparedStatement stat = con.prepareStatement(statement)) {
 			stat.setInt(1, value);
-			stat.setInt(2, uuid);
+			stat.setInt(2, itemId);
 			stat.executeUpdate();
 		}
 	}
 
-	public void updateSize(int uuid, String size) {
+	public void updateSize(int itemId, String size) {
 		try {
-			execute(uuid, size, UPDATE_SIZE);
+			execute(itemId, size, UPDATE_SIZE);
 		} catch (Exception e) {
 			log.error("Update size exception :", e);
 		}
 	}
 
-	public void updateQuantity(int uuid, int quantity, int price) {
+	public void updateQuantity(int itemId, int quantity, int price) {
 		try {
-			execute(uuid, quantity, UPDATE_QUANTITY);
+			execute(itemId, quantity, UPDATE_QUANTITY);
 		} catch (Exception e) {
 			log.error("Update quantity exception :" , e);
 		}
-		updateSubTotal(uuid, quantity * price);
+		updateSubTotal(itemId, quantity * price);
 	}
 
-	private void updatePrice(int uuid, int price) {
+	private void updatePrice(int itemId, int price) {
 		try (Connection con = getConnection();
 			PreparedStatement stat = con.prepareStatement(UPDATE_PRICE)) {
 			stat.setInt(1, price);
-			stat.setInt(2, uuid);
+			stat.setInt(2, itemId);
 			stat.executeUpdate();
 		} catch (Exception e) {
 			log.error("Update price exception :", e);
 		}
 	}
 
-	private void updateSubTotal(int uuid, int subTotal) {
+	private void updateSubTotal(int itemId, int subTotal) {
 		try {
-			execute(uuid, subTotal, UPDATE_SUB_TOTAL);
+			execute(itemId, subTotal, UPDATE_SUB_TOTAL);
 		} catch (Exception e) {
 			log.error("Update subTotal exception :" , e);
 		}
 	}
 
-	private void updateStatus(int uuid, int status) {
+	private void updateStatus(int itemId, int status) {
 		try {
-			execute(uuid, status, UPDATE_STATUS);
+			execute(itemId, status, UPDATE_STATUS);
 		} catch (Exception e) {
 			log.error("Update status exception :", e);
 		}
 	}
 
-	public void delete(int uuid) {
-		updateStatus(uuid, Item.DELETE);
+	public void delete(int itemId) {
+		updateStatus(itemId, Item.DELETE);
 	}
 
 	public void submit(String orderId) {
@@ -187,10 +187,10 @@ public class OrderDaoImpl implements OrderDao{
 		}
 	}
 
-	public void updateProduct(int uuid, String productName, Integer subTotal) {
-		updateProductName(uuid, productName);
-		updatePrice(uuid, getPrice(productName));
-		updateSubTotal(uuid, subTotal);
+	public void updateProduct(int itemId, String productName, Integer subTotal) {
+		updateProductName(itemId, productName);
+		updatePrice(itemId, getPrice(productName));
+		updateSubTotal(itemId, subTotal);
 	}
 
 	public int totalPrice(String orderId) {

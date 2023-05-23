@@ -34,19 +34,19 @@ public class Helper {
 		return self.nextSibling().nextSibling();
 	}
 
-	public static String nextUuid() {
+	public static String nextOrderId() {
 		return UUID.randomUUID().toString().substring(0, 6);
 	}
 
-	public static String combine(String uuid, String name) {
-		return uuid + "-" + name;
+	public static String combine(String orderId, String id) {
+		return orderId + "-" + id;
 	}
 
-	public static String parseOrderId(String uuid) {
-		return uuid.split("-")[0];
+	public static String parseOrderId(String componentId) {
+		return componentId.split("-")[0];
 	}
-	public static String parseItemId(String uuid) {
-		return uuid.split("-")[1];
+	public static String parseItemId(String componentId) {
+		return componentId.split("-")[1];
 	}
 
 	public static void log(String act) {

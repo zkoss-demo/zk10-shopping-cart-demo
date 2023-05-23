@@ -26,7 +26,7 @@ import org.zkoss.test.webdriver.WebDriverTestCase;
  * A simple test case for ZK 10 API
  * @author jumperchen
  */
-public class DemoRichletTest extends WebDriverTestCase {
+public class ShoppingCartRichletTest extends WebDriverTestCase {
 	@RegisterExtension
 	public final static DockerComposeExtension docker = DockerComposeExtension.builder()
 			.file("docker/docker-compose.yml")
