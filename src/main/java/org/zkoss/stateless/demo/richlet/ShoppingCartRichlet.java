@@ -155,7 +155,8 @@ public class ShoppingCartRichlet implements StatelessRichlet {
 
 	@Action(type = Events.ON_CHANGE)
 	public void changeQuantity(Self self,
-							   InputData quantityData, @ActionVariable(targetId = ActionTarget.NEXT_SIBLING) Integer price,
+							   InputData quantityData,
+							   @ActionVariable(targetId = ActionTarget.NEXT_SIBLING)Integer price,
 							   @ActionVariable(targetId = ActionTarget.PARENT, field = "id") String id) {
 		Integer quantity = Integer.valueOf(quantityData.getValue());
 		orderService.updateQuantity(parseItemId(id), quantity, price);
