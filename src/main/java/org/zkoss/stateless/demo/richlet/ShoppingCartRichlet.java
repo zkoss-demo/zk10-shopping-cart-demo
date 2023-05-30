@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
+import static org.zkoss.stateless.demo.AppIdInit.APP_ID;
 import static org.zkoss.stateless.demo.util.Helper.*;
 
 @RichletMapping("/shoppingCart")
@@ -36,6 +37,7 @@ public class ShoppingCartRichlet implements StatelessRichlet {
 
 	@RichletMapping("")
 	public List<IComponent> index() {
+		System.out.printf("app id: %s /shoppingCart is visited\n" , APP_ID) ;
 		return asList(
 			IStyle.ofSrc(DEMO_CSS),
 			IVlayout.of(
