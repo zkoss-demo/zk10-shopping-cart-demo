@@ -40,6 +40,7 @@ public class ShoppingCartRichlet implements StatelessRichlet {
 		System.out.printf("app id: %s /shoppingCart is visited\n" , APP_ID) ;
 		return asList(
 			IStyle.ofSrc(DEMO_CSS),
+			ILabel.of(APP_ID),
 			IVlayout.of(
 				renderShoppingBag(),
 				Boilerplate.ORDER_TEMPLATE
