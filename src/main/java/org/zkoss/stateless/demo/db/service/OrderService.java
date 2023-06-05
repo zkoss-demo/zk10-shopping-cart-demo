@@ -26,7 +26,7 @@ public class OrderService {
 
 	public OrderService() {
 		dao = new OrderDaoImpl();
-		dao = new OrderInMemory();
+//		dao = new OrderInMemory();
 	}
 
 	public String insertItem(String orderId) {
