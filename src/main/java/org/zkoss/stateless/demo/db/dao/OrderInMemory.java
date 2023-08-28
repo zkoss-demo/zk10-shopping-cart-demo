@@ -7,7 +7,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class OrderInMemory implements OrderDao{
     static AtomicInteger currentId = new AtomicInteger(0);
-    static List<Item> itemList = new ArrayList<Item>();
     static List<Order> orderList = new ArrayList();
 
     @Override
@@ -45,13 +44,28 @@ public class OrderInMemory implements OrderDao{
         return result;
     }
     @Override
-    public void updateQuantity(int uuid, int quantity, int price) {
-
+    public void updateQuantity(int itemId, int quantity, int price) {
+        for (Order order : orderList) {
+            for (Item item : order.getItems()) {
+                if (item.getId().equals(itemId)){
+                    item.setQuantity(quantity);
+                    item.setPrice(price);
+                    break;
+                }
+            }
+        }
     }
 
     @Override
-    public void delete(int uuid) {
-
+    public void delete(int itemId) {
+        for (Order order : orderList) {
+            for (Item item : order.getItems()) {
+                if (item.getId().equals(itemId)){
+                    order.getItems().remove(item);
+                    break;
+                }
+            }
+        }
     }
 
     @Override
@@ -60,22 +74,43 @@ public class OrderInMemory implements OrderDao{
     }
 
     @Override
-    public void updateProduct(int uuid, String productName, Integer subTotal) {
+    public void updateProduct(int itemId, String productName, Integer subTotal) {
+        for (Order order : orderList) {
+            for (Item item : order.getItems()) {
+                if (item.getId().equals(itemId)){
+                    item.setProductName(productName);
+                    break;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void updateSize(int itemId, String size) {
 
     }
 
     @Override
-    public void updateSize(int uuid, String size) {
-
-    }
-
-    @Override
-    public int sum(String orderId) {
-        return 0;
+    public int totalPrice(String orderId) {
+        int totalPrice = 0;
+        for (Order order : orderList) {
+            if (order.getId().equals(orderId)){
+                for (Item item : order.getItems()){
+                    totalPrice += item.getSubTotal();
+                }
+                break;
+            }
+        }
+        return totalPrice;
     }
 
     @Override
     public int count(String orderId) {
+        for (Order order : orderList) {
+            if (order.getId().equals(orderId)){
+                return order.getItems().size();
+            }
+        }
         return 0;
     }
 }
