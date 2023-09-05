@@ -11,7 +11,8 @@ Copyright (C) 2022 Potix Corporation. All Rights Reserved.
 */
 package org.zkoss.stateless.demo.db.service;
 
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 import org.zkoss.stateless.demo.db.dao.*;
 import org.zkoss.stateless.demo.pojo.Item;
@@ -24,10 +25,36 @@ public class OrderService {
 
 	private OrderDao dao;
 
+
 	public OrderService() {
-		dao = new OrderDaoImpl();
+		Properties prop = loadProperties("config.properties");
+		if (prop != null) {
+			String debugProperty = prop.getProperty("debug");
+			if ("true".equalsIgnoreCase(debugProperty)) {
+				this.dao = new OrderInMemory();
+			} else {
+				this.dao = new OrderDaoImpl();
+			}
+		}
 	}
 
+	private Properties loadProperties(String fileName) {
+		Properties prop = new Properties();
+		try (InputStream input = getClass().getClassLoader().getResourceAsStream(fileName)) {
+			if (input == null) {
+				System.out.println("Sorry, unable to find " + fileName);
+				return null;
+			}
+
+			// Load the properties
+			prop.load(input);
+			return prop;
+
+		} catch (IOException ex) {
+			ex.printStackTrace();
+			return null;
+		}
+	}
 	public String insertItem(String orderId) {
 		return dao.insertItem(orderId);
 	}
@@ -56,7 +83,7 @@ public class OrderService {
 		dao.delete(Integer.parseInt(itemId));
 	}
 
-	public int sum(String orderId) { return dao.sum(orderId); }
+	public int sum(String orderId) { return dao.totalPrice(orderId); }
 
 	public int count(String orderId) { return dao.count(orderId); }
 

@@ -62,11 +62,11 @@ public class DemoRichlet implements StatelessRichlet {
 	}
 
 	private IRow initShoppingBagItem(String orderId) {
-		String uuid = orderService.insertItem(orderId);
+		String itemId = orderService.insertItem(orderId);
 		int initQuantity = 1;
 		int initPrice = Item.DEFAULT_PRODUCT.getPrice();
-		String id = combine(orderId, uuid);
-		log("add item "+ id);
+		String rowId = combine(orderId, itemId);
+		log("add item "+ rowId);
 		return IRow.of(
 			initProductList(),
 			initProductSize(),
@@ -75,7 +75,7 @@ public class DemoRichlet implements StatelessRichlet {
 			ILabel.of(String.valueOf(initPrice)),
 			ILabel.of(String.valueOf(initPrice)),
 			IButton.of("delete").withAction(this::doDelete)
-		).withId(id);
+		).withId(rowId);
 	}
 
 	private IDiv initOrderButtons(String orderId) {
