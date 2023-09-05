@@ -20,6 +20,14 @@ repositories {
 	maven { url "https://mavensync.zkoss.org/maven2" }
 	maven { url "https://mavensync.zkoss.org/eval" }
 	maven {
+		name "ZK premium repo"
+		url "https://maven.zkoss.org/repo/zk/ee"
+		credentials {
+			username = "${zkee_username}"
+			password = "${zkee_password}"
+		}
+	}
+	maven {
 		url "https://plugins.gradle.org/m2/"
 	}
 }
