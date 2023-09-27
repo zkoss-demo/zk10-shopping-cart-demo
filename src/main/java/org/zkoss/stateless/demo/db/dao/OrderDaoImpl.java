@@ -51,9 +51,9 @@ public class OrderDaoImpl implements OrderDao{
 
 	private static final Logger log = LoggerFactory.getLogger(OrderDaoImpl.class);
 	static final String DRIVER = "org.postgresql.Driver";
-	static final String USER = "zephyr_admin";
-	static final String URL = "jdbc:postgresql://zephyr_db:5432/zephyr_db";
-	static final String PASS = "zephyr_pwd";
+	static final String USER = "admin";
+	static final String URL = "jdbc:postgresql://demo_db:5432/demo_db";
+	static final String PASS = "pwd";
 
 	private Connection getConnection() {
 		try {
