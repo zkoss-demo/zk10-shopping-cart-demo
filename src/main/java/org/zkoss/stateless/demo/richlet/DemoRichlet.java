@@ -37,9 +37,9 @@ public class DemoRichlet implements StatelessRichlet {
 	public static final String SHOPPING_CART_ROWS = "shoppingCartRows";
 
 	/**
-	 * append the path on this method after the path specified on the class
+	 * render the main page
 	 */
-	@RichletMapping("")
+	@RichletMapping("") // append the path on this method after the path specified on the class
 	public List<IComponent> index() {
 		return asList(
 			IStyle.ofSrc(DEMO_CSS),
@@ -63,17 +63,17 @@ public class DemoRichlet implements StatelessRichlet {
 	}
 
 	private IRows renderShoppingCartItems(String orderId) {
-		return IRows.ofId(SHOPPING_CART_ROWS).withChildren(renderShoppingCartItem(orderId));
+		return IRows.ofId(SHOPPING_CART_ROWS).withChildren(renderShoppingCartOneItem(orderId));
 	}
 
-	private IRow renderShoppingCartItem(String orderId) {
+	private IRow renderShoppingCartOneItem(String orderId) {
 		String itemId = orderService.insertItem(orderId);
 		int initQuantity = 1;
 		int initPrice = Product.DEFAULT_PRODUCT.getPrice();
 		String rowId = combine(orderId, itemId);
 		log("add item "+ rowId);
 		return IRow.of(
-			renderProductList(),
+			renderProductDropdownList(),
 			renderProductSize(),
 			ISpinner.of(initQuantity).withInstant(true)
 				.withAction(this::doQuantityChange),
@@ -88,13 +88,13 @@ public class DemoRichlet implements StatelessRichlet {
 					IButton.of("add item +")
 							.withSclass("add-items").withAction(this::addItem) // register an action handler
 							.withId(combine(orderId, "add")),
-					IButton.of("submit order").withAction(this::doSubmit)
+					IButton.of("submit order").withAction(this::doSubmit) //alternative way to register an action handler
 							.withSclass("submit")
 							.withId(combine(orderId, "submit")))
 				.withId("button-area");
 	}
 
-	private ICombobox renderProductList() {
+	private ICombobox renderProductDropdownList() {
 		String initProductName = Product.DEFAULT_PRODUCT.getName();
 		return ICombobox.of(initProductName)
 			.withReadonly(true)
@@ -111,14 +111,19 @@ public class DemoRichlet implements StatelessRichlet {
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	@Action(type = Events.ON_CLICK)
 	public void addItem(@ActionVariable(targetId = ActionTarget.SELF, field = "id") String uuid) {
 =======
 	@Action(type = Events.ON_CLICK) //wire this action handler, notice that if the selector in "from" finds multiple widgets
 	public void addItem(@ActionVariable(targetId = ActionTarget.SELF, field = "id") String uuid) { //get js widget state by @ActionVariable
 >>>>>>> d68105d (register action handler)
+=======
+	@Action(type = Events.ON_CLICK, from = ".add-items") //wire this action handler, notice that if the selector in "from" finds multiple widgets
+	public void addItem(@ActionVariable(targetId = ActionTarget.SELF, field = "id") String uuid) { //get js widget state by @ActionVariable
+>>>>>>> a94b1f0 (add comments)
 		UiAgent.getCurrent().appendChild(Locator.ofId(SHOPPING_CART_ROWS),
-				renderShoppingCartItem(parseOrderId(uuid)));
+				renderShoppingCartOneItem(parseOrderId(uuid)));
 	}
 
 	@Action(type = Events.ON_CLICK)
