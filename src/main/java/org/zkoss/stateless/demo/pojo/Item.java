@@ -99,7 +99,7 @@ public class Item {
 	}
 
 	public Integer getSubTotal() {
-		return subTotal;
+		return price * quantity;
 	}
 
 	public void setSubTotal(Integer subTotal) {
