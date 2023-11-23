@@ -61,11 +61,12 @@ public class OrderDaoImpl implements OrderDao{
 			return DriverManager.getConnection(OrderDaoImpl.URL, OrderDaoImpl.USER, OrderDaoImpl.PASS);
 		} catch (ClassNotFoundException e) {
 			log.error("DriverClassNotFound :" , e);
+			throw new RuntimeException(e);
 		} catch (SQLException x) {
 			log.error("connect with {}, {}, {}", OrderDaoImpl.URL, OrderDaoImpl.USER, OrderDaoImpl.PASS);
 			log.error("Exception :" , x);
+			throw new RuntimeException(x);
 		}
-		return null;
 	}
 	public String insertItem(String orderId) {
 		int id = -1;
@@ -78,7 +79,7 @@ public class OrderDaoImpl implements OrderDao{
 			if (rs.next())
 				id =  rs.getInt(1);
 			rs.close();
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			log.error("Insert item exception :" , e);
 		}
 		return String.valueOf(id);
@@ -95,7 +96,7 @@ public class OrderDaoImpl implements OrderDao{
 						rs.getInt(4), rs.getInt(5), rs.getInt(6)));
 			}
 			rs.close();
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			log.error("Select order exception :", e);
 		}
 		return items;
@@ -105,7 +106,7 @@ public class OrderDaoImpl implements OrderDao{
 	private void updateProductName(int itemId, String productName) {
 		try {
 			execute(itemId, productName, UPDATE_PRODUCT_NAME);
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			log.error("Update product name exception :" , e);
 		}
 	}
@@ -132,7 +133,7 @@ public class OrderDaoImpl implements OrderDao{
 	public void updateSize(int itemId, String size) {
 		try {
 			execute(itemId, size, UPDATE_SIZE);
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			log.error("Update size exception :", e);
 		}
 	}
@@ -140,7 +141,7 @@ public class OrderDaoImpl implements OrderDao{
 	public void updateQuantity(int itemId, int quantity, int price) {
 		try {
 			execute(itemId, quantity, UPDATE_QUANTITY);
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			log.error("Update quantity exception :" , e);
 		}
 		updateSubTotal(itemId, quantity * price);
@@ -152,7 +153,7 @@ public class OrderDaoImpl implements OrderDao{
 			stat.setInt(1, price);
 			stat.setInt(2, itemId);
 			stat.executeUpdate();
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			log.error("Update price exception :", e);
 		}
 	}
@@ -160,7 +161,7 @@ public class OrderDaoImpl implements OrderDao{
 	private void updateSubTotal(int itemId, int subTotal) {
 		try {
 			execute(itemId, subTotal, UPDATE_SUB_TOTAL);
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			log.error("Update subTotal exception :" , e);
 		}
 	}
@@ -168,7 +169,7 @@ public class OrderDaoImpl implements OrderDao{
 	private void updateStatus(int itemId, int status) {
 		try {
 			execute(itemId, status, UPDATE_STATUS);
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			log.error("Update status exception :", e);
 		}
 	}
@@ -182,7 +183,7 @@ public class OrderDaoImpl implements OrderDao{
 			PreparedStatement stat = con.prepareStatement(UPDATE_STATUS_TO_COMPLETE)) {
 			stat.setString(1, orderId);
 			stat.executeUpdate();
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			log.error("Submit exception :" , e);
 		}
 	}
@@ -204,7 +205,7 @@ public class OrderDaoImpl implements OrderDao{
 			if (rs.next())
 				sum = rs.getInt(1);
 			rs.close();
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			log.error("Sum sub total exception :" , e);
 		}
 		return sum;
@@ -221,7 +222,7 @@ public class OrderDaoImpl implements OrderDao{
 			if (rs.next())
 				count =  rs.getInt(1);
 			rs.close();
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			log.error("Count item exception :" , e);
 		}
 		return count;
