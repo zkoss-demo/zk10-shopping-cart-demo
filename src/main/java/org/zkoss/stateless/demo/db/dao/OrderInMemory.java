@@ -13,7 +13,7 @@ public class OrderInMemory implements OrderDao{
     public String insertItem(String orderId) {
         Order order = findOrCreateOrder(orderId);
         Integer itemId = currentId.incrementAndGet();
-        Item newItem = new Item(Item.DEFAULT_PRODUCT.getName(), "S", 1, Item.DEFAULT_PRODUCT.getPrice(), 100);
+        Item newItem = new Item(Product.DEFAULT_PRODUCT.getName(), "S", 1, Product.DEFAULT_PRODUCT.getPrice(), 100);
         newItem.setId(itemId);
         order.getItems().add(newItem);
         orderList.add(order);
@@ -86,6 +86,7 @@ public class OrderInMemory implements OrderDao{
         if (item != null) {
             item.setProductName(productName);
             item.setSubTotal(subTotal);
+            item.setPrice(Product.PRODUCT_TABLE.get(productName).getPrice());
         }
     }
 

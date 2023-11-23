@@ -11,9 +11,6 @@ Copyright (C) 2022 Potix Corporation. All Rights Reserved.
 */
 package org.zkoss.stateless.demo.pojo;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 /**
  * @author katherine
  */
@@ -31,15 +28,6 @@ public class Item {
 	private Integer subTotal;
 
 	private Integer status;
-
-	public static final Map<String, Product> PRODUCT_TABLE = new LinkedHashMap<>(3);
-
-	public static final Product DEFAULT_PRODUCT = new Product("Cake", 100, "/image/cake.svg");
-	static {
-		PRODUCT_TABLE.put("Cake", DEFAULT_PRODUCT);
-		PRODUCT_TABLE.put("Hamburger", new Product("Hamburger", 200, "/image/hamburger.svg"));
-		PRODUCT_TABLE.put("Pizza", new Product("Pizza", 300, "/image/pizza.svg"));
-	}
 
 	public static final int NOT_COMPLETE = 1;
 

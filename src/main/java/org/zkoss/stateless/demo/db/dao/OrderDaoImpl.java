@@ -18,7 +18,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.zkoss.stateless.demo.pojo.Item;
+import org.zkoss.stateless.demo.pojo.*;
 
 /**
  * @author katherine
@@ -228,6 +228,6 @@ public class OrderDaoImpl implements OrderDao{
 	}
 
 	private static int getPrice(String productName) {
-		return Item.PRODUCT_TABLE.get(productName).getPrice();
+		return Product.PRODUCT_TABLE.get(productName).getPrice();
 	}
 }
