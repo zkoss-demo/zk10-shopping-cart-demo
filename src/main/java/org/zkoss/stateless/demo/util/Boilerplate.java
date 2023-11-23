@@ -14,7 +14,7 @@ package org.zkoss.stateless.demo.util;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import org.zkoss.stateless.demo.pojo.Item;
+import org.zkoss.stateless.demo.pojo.*;
 import org.zkoss.stateless.sul.*;
 
 /**
@@ -29,11 +29,11 @@ public class Boilerplate {
 							.withEmptyMessage("no order.").withSclass("order"))
 			.withSclass("order-layout");
 
-	public static final IColumns SHOPPING_BAG_COLUMN_TEMPLATE = IColumns.of(
+	public static final IColumns SHOPPING_CART_COLUMN_TEMPLATE = IColumns.of(
 			IColumn.of("ITEMS"), IColumn.of("SIZE"), IColumn.of("QUANTITY"),
 			IColumn.of("PRICE"), IColumn.of("TOTAL"), IColumn.DEFAULT);
 
-	public static final Iterable<IComboitem> PRODUCT_LIST_TEMPLATE = Item.PRODUCT_TABLE.values()
+	public static final Iterable<IComboitem> PRODUCT_LIST_TEMPLATE = Product.PRODUCT_TABLE.values()
 			.stream().map((product -> IComboitem.of(product.getName(),
 					product.getIcon()))).collect(Collectors.toList());
 
@@ -42,14 +42,14 @@ public class Boilerplate {
 
 	public static IFooter summaryTemplate(int count, int sum) {
 		return IFooter.of(
-				ILabel.of("My bag: " + count + " items, "),
+				ILabel.of("My cart: " + count + " items, "),
 				ILabel.of(" Total price: $" + sum)
 		);
 	}
 
 	public static IRow orderItemTemplate(Item item) {
 		String productName = item.getProductName();
-		String src = Item.PRODUCT_TABLE.get(productName).getIcon();
+		String src = Product.PRODUCT_TABLE.get(productName).getIcon();
 		return IRow.of(
 				IVlayout.of(
 						IImage.ofSize("70px", "70px").withSrc(src),

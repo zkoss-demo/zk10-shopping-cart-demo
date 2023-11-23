@@ -14,7 +14,7 @@ package org.zkoss.stateless.demo.richlet;
 import org.zkoss.stateless.action.ActionTarget;
 import org.zkoss.stateless.action.data.InputData;
 import org.zkoss.stateless.annotation.*;
-import org.zkoss.stateless.demo.pojo.Item;
+import org.zkoss.stateless.demo.pojo.*;
 import org.zkoss.stateless.demo.util.*;
 import org.zkoss.stateless.sul.*;
 import org.zkoss.stateless.ui.*;
@@ -33,41 +33,43 @@ public class DemoRichlet implements StatelessRichlet {
 
 	private static final OrderService orderService = ServiceFactory.INSTANCE.getService();
 	private static final String DEMO_CSS = "/css/shoppingCart.css";
+	public static final String SHOPPING_CART = "shoppingCart";
+	public static final String SHOPPING_CART_ROWS = "shoppingCartRows";
 
 	/**
-	 *
-	 */ /* append the path on this method after the path specified on the class */
+	 * append the path on this method after the path specified on the class
+	 */
 	@RichletMapping("")
 	public List<IComponent> index() {
 		return asList(
 			IStyle.ofSrc(DEMO_CSS),
 			IVlayout.of(
-				renderShoppingBag(),
+				renderShoppingCart(),
 				Boilerplate.ORDER_TEMPLATE
 			)
 		);
 	}
 
-	private IVlayout renderShoppingBag() {
+	private IVlayout renderShoppingCart() {
 		final String orderId = Helper.nextUuid();
 		return IVlayout.of(
-			ILabel.of("Shopping bag").withSclass("title"),
-			IGrid.ofId("shoppingBag").withHflex("1")
+			ILabel.of("Shopping Cart").withSclass("title"),
+			IGrid.ofId(SHOPPING_CART).withHflex("1")
 				.withEmptyMessage("please add items.")
-				.withColumns(Boilerplate.SHOPPING_BAG_COLUMN_TEMPLATE)
-				.withRows(renderShoppingBagItems(orderId)),
+				.withColumns(Boilerplate.SHOPPING_CART_COLUMN_TEMPLATE)
+				.withRows(renderShoppingCartItems(orderId)),
 			renderOrderButtons(orderId))
-		.withSclass("shoppingBag");
+		.withSclass(SHOPPING_CART);
 	}
 
-	private IRows renderShoppingBagItems(String orderId) {
-		return IRows.ofId("shoppingBagRows").withChildren(renderShoppingBagItem(orderId));
+	private IRows renderShoppingCartItems(String orderId) {
+		return IRows.ofId(SHOPPING_CART_ROWS).withChildren(renderShoppingCartItem(orderId));
 	}
 
-	private IRow renderShoppingBagItem(String orderId) {
+	private IRow renderShoppingCartItem(String orderId) {
 		String itemId = orderService.insertItem(orderId);
 		int initQuantity = 1;
-		int initPrice = Item.DEFAULT_PRODUCT.getPrice();
+		int initPrice = Product.DEFAULT_PRODUCT.getPrice();
 		String rowId = combine(orderId, itemId);
 		log("add item "+ rowId);
 		return IRow.of(
@@ -83,8 +85,8 @@ public class DemoRichlet implements StatelessRichlet {
 
 	private IDiv renderOrderButtons(String orderId) {
 		return IDiv.of(
-					IButton.of("add item +").withAction(this::addItem)
-							.withSclass("add-items")
+					IButton.of("add item +")
+							.withSclass("add-items").withAction(this::addItem) // register an action handler
 							.withId(combine(orderId, "add")),
 					IButton.of("submit order").withAction(this::doSubmit)
 							.withSclass("submit")
@@ -93,7 +95,7 @@ public class DemoRichlet implements StatelessRichlet {
 	}
 
 	private ICombobox renderProductList() {
-		String initProductName = Item.DEFAULT_PRODUCT.getName();
+		String initProductName = Product.DEFAULT_PRODUCT.getName();
 		return ICombobox.of(initProductName)
 			.withReadonly(true)
 			.withAction(this::doItemChange)
@@ -108,10 +110,15 @@ public class DemoRichlet implements StatelessRichlet {
 			.withChildren(Boilerplate.PRODUCT_SIZE_TEMPLATE);
 	}
 
+<<<<<<< HEAD
 	@Action(type = Events.ON_CLICK)
 	public void addItem(@ActionVariable(targetId = ActionTarget.SELF, field = "id") String uuid) {
-		UiAgent.getCurrent().appendChild(Locator.ofId("shoppingBagRows"),
-				renderShoppingBagItem(parseOrderId(uuid)));
+=======
+	@Action(type = Events.ON_CLICK) //wire this action handler, notice that if the selector in "from" finds multiple widgets
+	public void addItem(@ActionVariable(targetId = ActionTarget.SELF, field = "id") String uuid) { //get js widget state by @ActionVariable
+>>>>>>> d68105d (register action handler)
+		UiAgent.getCurrent().appendChild(Locator.ofId(SHOPPING_CART_ROWS),
+				renderShoppingCartItem(parseOrderId(uuid)));
 	}
 
 	@Action(type = Events.ON_CLICK)
@@ -126,8 +133,8 @@ public class DemoRichlet implements StatelessRichlet {
 		final String orderId = parseOrderId(uuid);
 		orderService.submit(orderId);
 		UiAgent.getCurrent()
-				// empty the shopping bag rows
-				.replaceChildren(Locator.ofId("shoppingBagRows"))
+				// empty the shopping cart rows
+				.replaceChildren(Locator.ofId(SHOPPING_CART_ROWS))
 				// render the order table content
 				.replaceChildren(Locator.ofId("orderRows"),
 					orderService.selectOrder(orderId).stream()
@@ -147,7 +154,7 @@ public class DemoRichlet implements StatelessRichlet {
 							 @ActionVariable(targetId = ActionTarget.PARENT, field = "id") String uuid,
 							 @ActionVariable(targetId = ActionTarget.NEXT_SIBLING + ActionTarget.NEXT_SIBLING) Integer quantity) {
 		String productName = data.getValue();
-		int price = Item.PRODUCT_TABLE.get(productName).getPrice();
+		int price = Product.PRODUCT_TABLE.get(productName).getPrice();
 		orderService.updateProduct(parseItemId(uuid), productName, quantity * price);
 		String subTotal = String.valueOf(quantity * price);
 		UiAgent.getCurrent()
