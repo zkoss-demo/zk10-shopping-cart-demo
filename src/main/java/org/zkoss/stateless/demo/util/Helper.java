@@ -50,6 +50,6 @@ public class Helper {
 	}
 
 	public static void log(String act) {
-		Clients.log(String.join(": ", String.valueOf(Executions.getCurrent().getLocalAddr()), act));
+		Clients.evalJavaScript(String.format("console.log('%s')", String.join(": ", String.valueOf(Executions.getCurrent().getLocalAddr()), act)));
 	}
 }
