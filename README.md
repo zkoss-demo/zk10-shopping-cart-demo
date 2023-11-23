@@ -1,4 +1,5 @@
 # ZK 10 shopping cart demo
+An example application that demonstrates basic stateless component usages. See [Building Stateless UI](https://www.zkoss.org/wiki/ZK_Developer%27s_Reference/Stateless_Components/Building_Stateless_UI).
 
 # Prerequisites to run with Docker
 ### Install Docker and Docker Compose
