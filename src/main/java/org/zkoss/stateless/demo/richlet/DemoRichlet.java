@@ -110,18 +110,8 @@ public class DemoRichlet implements StatelessRichlet {
 			.withChildren(Boilerplate.PRODUCT_SIZE_TEMPLATE);
 	}
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 	@Action(type = Events.ON_CLICK)
 	public void addItem(@ActionVariable(targetId = ActionTarget.SELF, field = "id") String uuid) {
-=======
-	@Action(type = Events.ON_CLICK) //wire this action handler, notice that if the selector in "from" finds multiple widgets
-	public void addItem(@ActionVariable(targetId = ActionTarget.SELF, field = "id") String uuid) { //get js widget state by @ActionVariable
->>>>>>> d68105d (register action handler)
-=======
-	@Action(type = Events.ON_CLICK, from = ".add-items") //wire this action handler, notice that if the selector in "from" finds multiple widgets
-	public void addItem(@ActionVariable(targetId = ActionTarget.SELF, field = "id") String uuid) { //get js widget state by @ActionVariable
->>>>>>> a94b1f0 (add comments)
 		UiAgent.getCurrent().appendChild(Locator.ofId(SHOPPING_CART_ROWS),
 				renderShoppingCartOneItem(parseOrderId(uuid)));
 	}
