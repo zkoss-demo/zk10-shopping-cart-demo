@@ -11,7 +11,7 @@ Copyright (C) 2022 Potix Corporation. All Rights Reserved.
 */
 package org.zkoss.stateless.demo.richlet;
 
-import org.zkoss.stateless.action.ActionTarget;
+import org.zkoss.stateless.action.*;
 import org.zkoss.stateless.action.data.InputData;
 import org.zkoss.stateless.annotation.*;
 import org.zkoss.stateless.demo.pojo.*;
@@ -76,19 +76,21 @@ public class DemoRichlet implements StatelessRichlet {
 			renderProductDropdownList(),
 			renderProductSize(),
 			ISpinner.of(initQuantity).withInstant(true)
-				.withAction(this::doQuantityChange),
+				.withAction(ActionType.onChange(this::doQuantityChange)),
 			ILabel.of(String.valueOf(initPrice)),
 			ILabel.of(String.valueOf(initPrice)),
-			IButton.of("delete").withAction(this::doDelete)
+			IButton.of("delete").withAction(ActionType.onClick(this::doDelete))
 		).withId(rowId);
 	}
 
 	private IDiv renderOrderButtons(String orderId) {
 		return IDiv.of(
 					IButton.of("add item +")
-							.withSclass("add-items").withAction(this::addItem) // register an action handler
+							.withSclass("add-items")
+							.withAction(ActionType.onClick(this::addItem)) // register an action handler
 							.withId(combine(orderId, "add")),
-					IButton.of("submit order").withAction(this::doSubmit) //alternative way to register an action handler
+					IButton.of("submit order")
+							.withAction(ActionType.onClick(this::doSubmit))
 							.withSclass("submit")
 							.withId(combine(orderId, "submit")))
 				.withId("button-area");
@@ -98,7 +100,7 @@ public class DemoRichlet implements StatelessRichlet {
 		String initProductName = Product.DEFAULT_PRODUCT.getName();
 		return ICombobox.of(initProductName)
 			.withReadonly(true)
-			.withAction(this::doItemChange)
+			.withAction(ActionType.onChange(this::doItemChange))
 			.withChildren(Boilerplate.PRODUCT_LIST_TEMPLATE);
 	}
 
@@ -106,17 +108,15 @@ public class DemoRichlet implements StatelessRichlet {
 		String initProductSize = "S";
 		return ICombobox.of(initProductSize)
 			.withReadonly(true)
-			.withAction(this::doSizeChange)
+			.withAction(ActionType.onChange(this::doSizeChange))
 			.withChildren(Boilerplate.PRODUCT_SIZE_TEMPLATE);
 	}
 
-	@Action(type = Events.ON_CLICK)
 	public void addItem(@ActionVariable(targetId = ActionTarget.SELF, field = "id") String uuid) {
 		UiAgent.getCurrent().appendChild(Locator.ofId(SHOPPING_CART_ROWS),
 				renderShoppingCartOneItem(parseOrderId(uuid)));
 	}
 
-	@Action(type = Events.ON_CLICK)
 	public void doDelete(Self self, @ActionVariable(targetId = ActionTarget.PARENT, field = "id") String uuid) {
 		orderService.delete(parseItemId(uuid));
 		UiAgent.getCurrent().remove(Locator.ofId(uuid));
@@ -144,7 +144,6 @@ public class DemoRichlet implements StatelessRichlet {
 		log("submit order " + orderId);
 	}
 
-	@Action(type = Events.ON_CHANGE)
 	public void doItemChange(InputData data, Self self,
 							 @ActionVariable(targetId = ActionTarget.PARENT, field = "id") String uuid,
 							 @ActionVariable(targetId = ActionTarget.NEXT_SIBLING + ActionTarget.NEXT_SIBLING) Integer quantity) {
@@ -158,7 +157,6 @@ public class DemoRichlet implements StatelessRichlet {
 		log("change item");
 	}
 
-	@Action(type = Events.ON_CHANGE)
 	public void doQuantityChange(Self self,
 			InputData data, @ActionVariable(targetId = ActionTarget.NEXT_SIBLING) Integer price,
 			@ActionVariable(targetId = ActionTarget.PARENT, field = "id") String uuid) {
@@ -170,7 +168,6 @@ public class DemoRichlet implements StatelessRichlet {
 		log("change quantity");
 	}
 
-	@Action(type = Events.ON_CHANGE)
 	public void doSizeChange(InputData data, @ActionVariable(targetId = ActionTarget.PARENT, field = "id") String uuid) {
 		orderService.updateSize(parseItemId(uuid), data.getValue());
 		log("change size");

@@ -60,7 +60,7 @@ public class Boilerplate {
 						ILabel.of("Quantity: " + item.getQuantity()),
 						ILabel.of("$ " + item.getPrice())
 				).withSclass("item-detail"),
-				ILabel.of("Sub Total: $ " + item.getSubTotal()).withSclass("subTotal")
+				ILabel.of("Subtotal: $ " + item.getSubTotal()).withSclass("subTotal")
 		);
 	}
 }
