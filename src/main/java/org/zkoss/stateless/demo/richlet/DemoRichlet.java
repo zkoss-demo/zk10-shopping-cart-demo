@@ -112,20 +112,21 @@ public class DemoRichlet implements StatelessRichlet {
 			.withChildren(Boilerplate.PRODUCT_SIZE_TEMPLATE);
 	}
 
-	public void addItem(@ActionVariable(targetId = ActionTarget.SELF, field = "id") String uuid) {
+	public void addItem(@ActionVariable(targetId = ActionTarget.SELF, field = "id") String id) {
 		UiAgent.getCurrent().appendChild(Locator.ofId(SHOPPING_CART_ROWS),
-				renderShoppingCartOneItem(parseOrderId(uuid)));
+				renderShoppingCartOneItem(parseOrderId(id)));
 	}
 
-	public void doDelete(Self self, @ActionVariable(targetId = ActionTarget.PARENT, field = "id") String uuid) {
-		orderService.delete(parseItemId(uuid));
-		UiAgent.getCurrent().remove(Locator.ofId(uuid));
-		log("delete item " + uuid);
+	public void doDelete(Self self,
+						 @ActionVariable(targetId = ActionTarget.PARENT, field = "id") String id) {
+		orderService.delete(parseItemId(id));
+		UiAgent.getCurrent().remove(Locator.ofId(id));
+		log("delete item " + id);
 	}
 
 	@Action(type = Events.ON_CLICK)
-	public void doSubmit(@ActionVariable(targetId = ActionTarget.SELF, field = "id") String uuid) {
-		final String orderId = parseOrderId(uuid);
+	public void doSubmit(@ActionVariable(targetId = ActionTarget.SELF, field = "id") String id) {
+		final String orderId = parseOrderId(id);
 		orderService.submit(orderId);
 		UiAgent.getCurrent()
 				// empty the shopping cart rows
@@ -144,12 +145,13 @@ public class DemoRichlet implements StatelessRichlet {
 		log("submit order " + orderId);
 	}
 
-	public void doItemChange(InputData data, Self self,
-							 @ActionVariable(targetId = ActionTarget.PARENT, field = "id") String uuid,
+	public void doItemChange(InputData data,
+							 Self self,
+							 @ActionVariable(targetId = ActionTarget.PARENT, field = "id") String id,
 							 @ActionVariable(targetId = ActionTarget.NEXT_SIBLING + ActionTarget.NEXT_SIBLING) Integer quantity) {
 		String productName = data.getValue();
 		int price = Product.PRODUCT_TABLE.get(productName).getPrice();
-		orderService.updateProduct(parseItemId(uuid), productName, quantity * price);
+		orderService.updateProduct(parseItemId(id), productName, quantity * price);
 		String subTotal = String.valueOf(quantity * price);
 		UiAgent.getCurrent()
 				.smartUpdate(Helper.getPriceLocator(self), new ILabel.Updater().value(String.valueOf(price)))
@@ -158,18 +160,20 @@ public class DemoRichlet implements StatelessRichlet {
 	}
 
 	public void doQuantityChange(Self self,
-			InputData data, @ActionVariable(targetId = ActionTarget.NEXT_SIBLING) Integer price,
-			@ActionVariable(targetId = ActionTarget.PARENT, field = "id") String uuid) {
+								 InputData data,
+								 @ActionVariable(targetId = ActionTarget.NEXT_SIBLING) Integer price,
+								 @ActionVariable(targetId = ActionTarget.PARENT, field = "id") String id) {
 		Integer quantity = Integer.valueOf(data.getValue());
-		orderService.updateQuantity(parseItemId(uuid), quantity, price);
+		orderService.updateQuantity(parseItemId(id), quantity, price);
 		UiAgent.getCurrent().smartUpdate(
 				getTotalLocatorFromQuantity(self),
 			new ILabel.Updater().value(String.valueOf((price * quantity))));
 		log("change quantity");
 	}
 
-	public void doSizeChange(InputData data, @ActionVariable(targetId = ActionTarget.PARENT, field = "id") String uuid) {
-		orderService.updateSize(parseItemId(uuid), data.getValue());
+	public void doSizeChange(InputData data,
+							 @ActionVariable(targetId = ActionTarget.PARENT, field = "id") String id) {
+		orderService.updateSize(parseItemId(id), data.getValue());
 		log("change size");
 	}
 }

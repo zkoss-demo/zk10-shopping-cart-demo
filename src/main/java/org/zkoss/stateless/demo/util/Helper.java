@@ -38,15 +38,15 @@ public class Helper {
 		return UUID.randomUUID().toString().substring(0, 6);
 	}
 
-	public static String combine(String uuid, String name) {
-		return uuid + "-" + name;
+	public static String combine(String id, String name) {
+		return id + "-" + name;
 	}
 
-	public static String parseOrderId(String uuid) {
-		return uuid.split("-")[0];
+	public static String parseOrderId(String id) {
+		return id.split("-")[0];
 	}
-	public static String parseItemId(String uuid) {
-		return uuid.split("-")[1];
+	public static String parseItemId(String id) {
+		return id.split("-")[1];
 	}
 
 	public static void log(String act) {
