@@ -117,8 +117,7 @@ public class DemoRichlet implements StatelessRichlet {
 				renderShoppingCartOneItem(parseOrderId(id)));
 	}
 
-	public void doDelete(Self self,
-						 @ActionVariable(targetId = ActionTarget.PARENT, field = "id") String id) {
+	public void doDelete(@ActionVariable(targetId = ActionTarget.PARENT, field = "id") String id) {
 		orderService.delete(parseItemId(id));
 		UiAgent.getCurrent().remove(Locator.ofId(id));
 		log("delete item " + id);
