@@ -53,7 +53,7 @@ public class DemoRichlet implements StatelessRichlet {
 	private IVlayout renderShoppingCart() {
 		final String orderId = Helper.nextUuid();
 		return IVlayout.of(
-			ILabel.of("Shopping Cart").withSclass("title"),
+			ILabel.of("Stateless Components Demo - Shopping Cart").withSclass("title"),
 			IGrid.ofId(SHOPPING_CART).withHflex("1")
 				.withEmptyMessage("please add items.")
 				.withColumns(Boilerplate.SHOPPING_CART_COLUMN_TEMPLATE)
