@@ -54,12 +54,17 @@ public class DemoRichlet implements StatelessRichlet {
 		final String orderId = Helper.nextUuid();
 		return IVlayout.of(
 			ILabel.of("Stateless Components Demo - Shopping Cart").withSclass("title"),
+			renderDescription(),
 			IGrid.ofId(SHOPPING_CART).withHflex("1")
 				.withEmptyMessage("please add items.")
 				.withColumns(Boilerplate.SHOPPING_CART_COLUMN_TEMPLATE)
 				.withRows(renderShoppingCartItems(orderId)),
 			renderOrderButtons(orderId))
 		.withSclass(SHOPPING_CART);
+	}
+
+	private IDiv renderDescription() {
+		return IDiv.of(IHtml.of("Please read <a href=\"https://www.zkoss.org/wiki/ZK%20Developer's%20Reference/Stateless%20Components\" target=\"_blank\">ZK Developer's Reference > Stateless Components</a> for details"));
 	}
 
 	private IRows renderShoppingCartItems(String orderId) {
