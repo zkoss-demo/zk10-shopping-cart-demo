@@ -1,0 +1,21 @@
+<zk>
+    <vlayout>
+        <hlayout>
+            <intbox width="300px" id="firstMember" value="2" />
+            <label value="first member"/>
+        </hlayout>
+        <hlayout>
+            <listbox id="operation" width="300px" mold="select">
+                <listitem value="add" label="add" selected="true"></listitem>
+                <listitem value="multiply" label="multiply"></listitem>
+            </listbox>
+            <label value="operation"/>
+        </hlayout>
+        <hlayout>
+            <intbox width="300px" id="secondMember" value="3"/>
+            <label value="second member"/>
+        </hlayout>
+        <button width="300px" id="calculate" label="calculate"/>
+        <label id="result" value="Result: "/>
+    </vlayout>
+</zk>
