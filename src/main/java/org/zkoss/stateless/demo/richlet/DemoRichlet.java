@@ -43,6 +43,8 @@ public class DemoRichlet implements StatelessRichlet {
 	public List<IComponent> index() {
 		return asList(
 			IStyle.ofSrc(DEMO_CSS),
+			IStyle.ofSrc("https://fonts.googleapis.com/css?family=Roboto:300,400,500,600,700"),
+			IScript.ofSrc("/js/load-favicon.js"),
 			IVlayout.of(
 				renderShoppingCart(),
 				Boilerplate.ORDER_TEMPLATE
@@ -53,7 +55,7 @@ public class DemoRichlet implements StatelessRichlet {
 	private IVlayout renderShoppingCart() {
 		final String orderId = Helper.nextUuid();
 		return IVlayout.of(
-			ILabel.of("Stateless Components Demo - Shopping Cart").withSclass("title"),
+			ILabel.of("ZK Stateless Components Demo - Shopping Cart").withSclass("title"),
 			renderDescription(),
 			IGrid.ofId(SHOPPING_CART).withHflex("1")
 				.withEmptyMessage("please add items.")
@@ -64,7 +66,7 @@ public class DemoRichlet implements StatelessRichlet {
 	}
 
 	private IDiv renderDescription() {
-		return IDiv.of(IHtml.of("Please read <a href=\"https://www.zkoss.org/wiki/ZK%20Developer's%20Reference/Stateless%20Components\" target=\"_blank\">ZK Developer's Reference > Stateless Components</a> for details"));
+		return IDiv.of(IHtml.of("Stateless Components is a new feature introduced in ZK 10 enabling developers to build cloud-native apps. For more information, please read <a href=\"https://www.zkoss.org/wiki/ZK%20Developer's%20Reference/Stateless%20Components\" target=\"_blank\">ZK Developer's Reference > Stateless Components</a> for details"));
 	}
 
 	private IRows renderShoppingCartItems(String orderId) {
