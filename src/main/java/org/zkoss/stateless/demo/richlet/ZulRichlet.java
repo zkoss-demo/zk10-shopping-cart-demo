@@ -21,13 +21,12 @@ public class ZulRichlet implements StatelessRichlet {
     }
 
     /**
-     * register action handler based on zul.
+     * wire action handler based on zul.
      * @param firstMemberValue field = "value" is default: you don't need to specify it explicitly
-     * @param operation
      */
     @Action(from = "#calculate", type = Events.ON_CLICK)
-    public void calculate(@ActionVariable(targetId = "firstMember", field = "value") int firstMemberValue,
-                          @ActionVariable(targetId = "secondMember", field = "value") int secondMemberValue,
+    public void calculate(@ActionVariable(targetId = "firstMember") int firstMemberValue,
+                          @ActionVariable(targetId = "secondMember") int secondMemberValue,
                           @ActionVariable(targetId = "operation", field = "selectedIndex") int operation) {
 
         int result = 0;

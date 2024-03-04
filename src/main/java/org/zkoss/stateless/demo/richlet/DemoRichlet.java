@@ -28,6 +28,13 @@ import java.util.stream.Collectors;
 import static java.util.Arrays.asList;
 import static org.zkoss.stateless.demo.util.Helper.*;
 
+/**
+ * A basic example of using stateless components.
+ * To build UI with stateless components, you need to create a Richlet that implements {@link StatelessRichlet}.
+ * Need to specify a URL for this Richlet with {@link RichletMapping}.
+ * Hence, the URL is:
+ * http://localhost:8080/[CONTEXT-PATH]/shoppingCart
+ */
 @RichletMapping("/shoppingCart")
 public class DemoRichlet implements StatelessRichlet {
 
@@ -94,7 +101,7 @@ public class DemoRichlet implements StatelessRichlet {
 		return IDiv.of(
 					IButton.of("add item +")
 							.withSclass("add-items")
-							.withAction(ActionType.onClick(this::addItem)) // register an action handler
+							.withAction(ActionType.onClick(this::addItem)) // wire an action handler
 							.withId(combine(orderId, "add")),
 					IButton.of("submit order")
 							.withAction(ActionType.onClick(this::doSubmit))
@@ -115,11 +122,16 @@ public class DemoRichlet implements StatelessRichlet {
 		String initProductSize = "S";
 		return ICombobox.of(initProductSize)
 			.withReadonly(true)
-			.withAction(ActionType.onChange(this::doSizeChange))
+			.withAction(ActionType.onChange(this::doSizeChange)) //wire an action handler for onChange event
 			.withChildren(Boilerplate.PRODUCT_SIZE_TEMPLATE);
 	}
 
+    /**
+     * specify {@link ActionTarget#SELF} to get the event target component, which is button in this case.
+     * specify which component's property name you want to get. Then zk client will send this state from a browser.
+     */
 	public void addItem(@ActionVariable(targetId = ActionTarget.SELF, field = "id") String id) {
+        //you need to tell ZK client engine the target component you want to manipulate by describing its location with Locator
 		UiAgent.getCurrent().appendChild(Locator.ofId(SHOPPING_CART_ROWS),
 				renderShoppingCartOneItem(parseOrderId(id)));
 	}
