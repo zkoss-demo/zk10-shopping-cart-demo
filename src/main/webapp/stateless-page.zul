@@ -5,7 +5,7 @@
             <label value="first member"/>
         </hlayout>
         <hlayout>
-            <listbox id="operation" width="300px" mold="select">
+            <listbox id="operation" width="300px" mold="select" >
                 <listitem value="add" label="add" selected="true"></listitem>
                 <listitem value="multiply" label="multiply"></listitem>
             </listbox>

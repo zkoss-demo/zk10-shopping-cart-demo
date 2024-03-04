@@ -8,14 +8,23 @@ import org.zkoss.zk.ui.event.Events;
 
 import java.util.List;
 
+/**
+ * demonstrate how to build UI in zul with stateless components.
+ */
 @RichletMapping("/zul")
 public class ZulRichlet implements StatelessRichlet {
 
     @RichletMapping("")
     public List<IComponent> index() {
+        // build UI via a zul but render it in stateless components
         return Immutables.createComponents("stateless-page.zul", null);
     }
 
+    /**
+     * register action handler based on zul.
+     * @param firstMemberValue field = "value" is default: you don't need to specify it explicitly
+     * @param operation
+     */
     @Action(from = "#calculate", type = Events.ON_CLICK)
     public void calculate(@ActionVariable(targetId = "firstMember", field = "value") int firstMemberValue,
                           @ActionVariable(targetId = "secondMember", field = "value") int secondMemberValue,
@@ -23,11 +32,11 @@ public class ZulRichlet implements StatelessRichlet {
 
         int result = 0;
         switch (operation) {
-            case 0: {
+            case 0: { //add
                 result = firstMemberValue + secondMemberValue;
                 break;
             }
-            case 1: {
+            case 1: {  //multiply
                 result = firstMemberValue * secondMemberValue;
                 break;
             }
