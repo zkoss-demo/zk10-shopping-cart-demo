@@ -28,7 +28,9 @@ After docker compose start, application can be accessed in http://localhost/shop
 
 # Publish as Demo
 1. build with `gradle clean war`
-2. publish with [update_war](http://jenkins2/jenkins2/job/update_war/)
+2. upload to one of test server
+3. publish with [update_war](http://jenkins2/jenkins2/job/update_war/)
+
 # Licence
 * Demo code: MIT
 * [ZK Framework](https://github.com/zkoss/zk): [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
